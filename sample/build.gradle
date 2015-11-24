@@ -48,9 +48,9 @@ dependencies {
   compile(rootProject.ext.dependencies["me.henrytao:mdcore"]) {
     exclude group: "com.android.support"
   }
-  compile(project(":library")) {
-    exclude group: "com.android.support"
-  }
+//  compile(project(":library")) {
+//    exclude group: "com.android.support"
+//  }
 
   compile rootProject.ext.dependencies["com.jakewharton:butterknife"]
 }
