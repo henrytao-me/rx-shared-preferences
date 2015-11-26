@@ -27,6 +27,8 @@ public class RxSharedPreferences {
 
   protected final BooleanPreference mBooleanPreference;
 
+  protected final IntegerPreference mIntegerPreference;
+
   protected final SharedPreferences mSharedPreferences;
 
   public RxSharedPreferences(SharedPreferences sharedPreferences) {
@@ -35,14 +37,23 @@ public class RxSharedPreferences {
     }
     mSharedPreferences = sharedPreferences;
     mBooleanPreference = new BooleanPreference(mSharedPreferences);
+    mIntegerPreference = new IntegerPreference(mSharedPreferences);
   }
 
   public Boolean getBoolean(String key, Boolean defValue) {
     return mBooleanPreference.get(key, defValue);
   }
 
+  public Integer getInt(String key, Integer defValue) {
+    return mIntegerPreference.get(key, defValue);
+  }
+
   public Observable<Boolean> observeBoolean(String key, Boolean defValue) {
     return mBooleanPreference.observe(key, defValue);
+  }
+
+  public Observable<Integer> observeInt(String key, Integer defValue) {
+    return mIntegerPreference.observe(key, defValue);
   }
 
   public void putBoolean(String key, Boolean value) {
@@ -51,5 +62,13 @@ public class RxSharedPreferences {
 
   public void putBooleanInBackground(String key, Boolean value) {
     mBooleanPreference.putInBackground(key, value);
+  }
+
+  public void putInt(String key, Integer value) {
+    mIntegerPreference.put(key, value);
+  }
+
+  public void putIntInBackground(String key, Integer value) {
+    mIntegerPreference.putInBackground(key, value);
   }
 }
