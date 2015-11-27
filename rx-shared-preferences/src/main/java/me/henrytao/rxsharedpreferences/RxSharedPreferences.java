@@ -31,6 +31,8 @@ public class RxSharedPreferences {
 
   protected final SharedPreferences mSharedPreferences;
 
+  protected final StringPreference mStringPreference;
+
   public RxSharedPreferences(SharedPreferences sharedPreferences) {
     if (sharedPreferences == null) {
       throw new RuntimeException("SharedPreferences can not be null");
@@ -38,6 +40,7 @@ public class RxSharedPreferences {
     mSharedPreferences = sharedPreferences;
     mBooleanPreference = new BooleanPreference(mSharedPreferences);
     mIntegerPreference = new IntegerPreference(mSharedPreferences);
+    mStringPreference = new StringPreference(mSharedPreferences);
   }
 
   public Boolean getBoolean(String key, Boolean defValue) {
@@ -48,12 +51,20 @@ public class RxSharedPreferences {
     return mIntegerPreference.get(key, defValue);
   }
 
+  public String getString(String key, String defValue) {
+    return mStringPreference.get(key, defValue);
+  }
+
   public Observable<Boolean> observeBoolean(String key, Boolean defValue) {
     return mBooleanPreference.observe(key, defValue);
   }
 
   public Observable<Integer> observeInt(String key, Integer defValue) {
     return mIntegerPreference.observe(key, defValue);
+  }
+
+  public Observable<String> observeString(String key, String defValue) {
+    return mStringPreference.observe(key, defValue);
   }
 
   public void putBoolean(String key, Boolean value) {
@@ -70,5 +81,13 @@ public class RxSharedPreferences {
 
   public void putIntInBackground(String key, Integer value) {
     mIntegerPreference.putInBackground(key, value);
+  }
+
+  public void putString(String key, String value) {
+    mStringPreference.put(key, value);
+  }
+
+  public void putStringInBackground(String key, String value) {
+    mStringPreference.putInBackground(key, value);
   }
 }
