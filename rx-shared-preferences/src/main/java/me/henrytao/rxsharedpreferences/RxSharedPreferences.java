@@ -29,6 +29,8 @@ public class RxSharedPreferences {
 
   protected final IntegerPreference mIntegerPreference;
 
+  protected final LongPreference mLongPreference;
+
   protected final SharedPreferences mSharedPreferences;
 
   protected final StringPreference mStringPreference;
@@ -40,6 +42,7 @@ public class RxSharedPreferences {
     mSharedPreferences = sharedPreferences;
     mBooleanPreference = new BooleanPreference(mSharedPreferences);
     mIntegerPreference = new IntegerPreference(mSharedPreferences);
+    mLongPreference = new LongPreference(mLongPreference);
     mStringPreference = new StringPreference(mSharedPreferences);
   }
 
@@ -49,6 +52,10 @@ public class RxSharedPreferences {
 
   public Integer getInt(String key, Integer defValue) {
     return mIntegerPreference.get(key, defValue);
+  }
+
+  public Long getLong(String key, Long defValue) {
+    return mLongPreference.get(key, defValue);
   }
 
   public String getString(String key, String defValue) {
@@ -61,6 +68,10 @@ public class RxSharedPreferences {
 
   public Observable<Integer> observeInt(String key, Integer defValue) {
     return mIntegerPreference.observe(key, defValue);
+  }
+
+  public Observable<Long> observeLong(String key, Long defValue) {
+    return mLongPreference.observe(key, defValue);
   }
 
   public Observable<String> observeString(String key, String defValue) {
@@ -81,6 +92,14 @@ public class RxSharedPreferences {
 
   public void putIntInBackground(String key, Integer value) {
     mIntegerPreference.putInBackground(key, value);
+  }
+
+  public void putLong(String key, Long value) {
+    mLongPreference.put(key, value);
+  }
+
+  public void putLongInBackground(String key, Long value) {
+    mLongPreference.putInBackground(key, value);
   }
 
   public void putString(String key, String value) {
