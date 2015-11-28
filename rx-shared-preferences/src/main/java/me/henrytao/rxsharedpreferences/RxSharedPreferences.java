@@ -42,7 +42,7 @@ public class RxSharedPreferences {
     mSharedPreferences = sharedPreferences;
     mBooleanPreference = new BooleanPreference(mSharedPreferences);
     mIntegerPreference = new IntegerPreference(mSharedPreferences);
-    mLongPreference = new LongPreference(mLongPreference);
+    mLongPreference = new LongPreference(mSharedPreferences);
     mStringPreference = new StringPreference(mSharedPreferences);
   }
 
