@@ -27,6 +27,8 @@ public class RxSharedPreferences {
 
   protected final BooleanPreference mBooleanPreference;
 
+  protected final FloatPreference mFloatPreference;
+
   protected final IntegerPreference mIntegerPreference;
 
   protected final LongPreference mLongPreference;
@@ -41,6 +43,7 @@ public class RxSharedPreferences {
     }
     mSharedPreferences = sharedPreferences;
     mBooleanPreference = new BooleanPreference(mSharedPreferences);
+    mFloatPreference = new FloatPreference(mSharedPreferences);
     mIntegerPreference = new IntegerPreference(mSharedPreferences);
     mLongPreference = new LongPreference(mSharedPreferences);
     mStringPreference = new StringPreference(mSharedPreferences);
@@ -48,6 +51,10 @@ public class RxSharedPreferences {
 
   public Boolean getBoolean(String key, Boolean defValue) {
     return mBooleanPreference.get(key, defValue);
+  }
+
+  public Float getFloat(String key, Float defValue) {
+    return mFloatPreference.get(key, defValue);
   }
 
   public Integer getInt(String key, Integer defValue) {
@@ -64,6 +71,10 @@ public class RxSharedPreferences {
 
   public Observable<Boolean> observeBoolean(String key, Boolean defValue) {
     return mBooleanPreference.observe(key, defValue);
+  }
+
+  public Observable<Float> observeFloat(String key, Float defValue) {
+    return mFloatPreference.observe(key, defValue);
   }
 
   public Observable<Integer> observeInt(String key, Integer defValue) {
@@ -84,6 +95,14 @@ public class RxSharedPreferences {
 
   public void putBooleanInBackground(String key, Boolean value) {
     mBooleanPreference.putInBackground(key, value);
+  }
+
+  public void putFloat(String key, Float value) {
+    mFloatPreference.put(key, value);
+  }
+
+  public void putFloatInBackground(String key, Float value) {
+    mFloatPreference.putInBackground(key, value);
   }
 
   public void putInt(String key, Integer value) {
