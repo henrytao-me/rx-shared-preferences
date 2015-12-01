@@ -18,6 +18,8 @@ package me.henrytao.rxsharedpreferences;
 
 import android.content.SharedPreferences;
 
+import java.util.Set;
+
 import rx.Observable;
 
 /**
@@ -37,6 +39,8 @@ public class RxSharedPreferences {
 
   protected final StringPreference mStringPreference;
 
+  private final StringSetPreference mStringSetPreference;
+
   public RxSharedPreferences(SharedPreferences sharedPreferences) {
     if (sharedPreferences == null) {
       throw new RuntimeException("SharedPreferences can not be null");
@@ -47,6 +51,7 @@ public class RxSharedPreferences {
     mIntegerPreference = new IntegerPreference(mSharedPreferences);
     mLongPreference = new LongPreference(mSharedPreferences);
     mStringPreference = new StringPreference(mSharedPreferences);
+    mStringSetPreference = new StringSetPreference(mSharedPreferences);
   }
 
   public Boolean getBoolean(String key, Boolean defValue) {
@@ -69,6 +74,10 @@ public class RxSharedPreferences {
     return mStringPreference.get(key, defValue);
   }
 
+  public Set<String> getStringSet(String key, Set<String> defValue) {
+    return mStringSetPreference.get(key, defValue);
+  }
+
   public Observable<Boolean> observeBoolean(String key, Boolean defValue) {
     return mBooleanPreference.observe(key, defValue);
   }
@@ -87,6 +96,10 @@ public class RxSharedPreferences {
 
   public Observable<String> observeString(String key, String defValue) {
     return mStringPreference.observe(key, defValue);
+  }
+
+  public Observable<Set<String>> observeStringSet(String key, Set<String> defValue) {
+    return mStringSetPreference.observe(key, defValue);
   }
 
   public void putBoolean(String key, Boolean value) {
@@ -127,5 +140,13 @@ public class RxSharedPreferences {
 
   public void putStringInBackground(String key, String value) {
     mStringPreference.putInBackground(key, value);
+  }
+
+  public void putStringSet(String key, Set<String> value) {
+    mStringSetPreference.put(key, value);
+  }
+
+  public void putStringSetInBackground(String key, Set<String> value) {
+    mStringSetPreference.putInBackground(key, value);
   }
 }
