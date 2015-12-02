@@ -16,6 +16,8 @@
 
 package me.henrytao.rxsharedpreferences;
 
+import org.json.JSONObject;
+
 import android.content.SharedPreferences;
 
 import java.util.Set;
@@ -39,6 +41,8 @@ public class RxSharedPreferences {
 
   protected final StringPreference mStringPreference;
 
+  private final JSONObjectPreference mJSONPreference;
+
   private final StringSetPreference mStringSetPreference;
 
   public RxSharedPreferences(SharedPreferences sharedPreferences) {
@@ -52,6 +56,7 @@ public class RxSharedPreferences {
     mLongPreference = new LongPreference(mSharedPreferences);
     mStringPreference = new StringPreference(mSharedPreferences);
     mStringSetPreference = new StringSetPreference(mSharedPreferences);
+    mJSONPreference = new JSONObjectPreference(mSharedPreferences);
   }
 
   public Boolean getBoolean(String key, Boolean defValue) {
@@ -66,6 +71,10 @@ public class RxSharedPreferences {
     return mIntegerPreference.get(key, defValue);
   }
 
+  public JSONObject getJSONObject(String key, JSONObject defValue) {
+    return mJSONPreference.get(key, defValue);
+  }
+
   public Long getLong(String key, Long defValue) {
     return mLongPreference.get(key, defValue);
   }
@@ -78,8 +87,8 @@ public class RxSharedPreferences {
     return mStringSetPreference.get(key, defValue);
   }
 
-  public Observable<Boolean> observeBoolean(String key, Boolean defValue) {
-    return mBooleanPreference.observe(key, defValue);
+  public Observable<JSONObject> observeBoolean(String key, JSONObject defValue) {
+    return mJSONPreference.observe(key, defValue);
   }
 
   public Observable<Float> observeFloat(String key, Float defValue) {
@@ -88,6 +97,10 @@ public class RxSharedPreferences {
 
   public Observable<Integer> observeInt(String key, Integer defValue) {
     return mIntegerPreference.observe(key, defValue);
+  }
+
+  public Observable<Boolean> observeJSONObject(String key, Boolean defValue) {
+    return mBooleanPreference.observe(key, defValue);
   }
 
   public Observable<Long> observeLong(String key, Long defValue) {
@@ -124,6 +137,14 @@ public class RxSharedPreferences {
 
   public void putIntInBackground(String key, Integer value) {
     mIntegerPreference.putInBackground(key, value);
+  }
+
+  public void putJSONObject(String key, JSONObject value) {
+    mJSONPreference.put(key, value);
+  }
+
+  public void putJSONObjectInBackground(String key, JSONObject value) {
+    mJSONPreference.putInBackground(key, value);
   }
 
   public void putLong(String key, Long value) {
