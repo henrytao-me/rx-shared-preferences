@@ -20,6 +20,7 @@ import org.json.JSONObject;
 
 import android.content.SharedPreferences;
 
+import java.util.Map;
 import java.util.Set;
 
 import rx.Observable;
@@ -35,15 +36,17 @@ public class RxSharedPreferences {
 
   protected final IntegerPreference mIntegerPreference;
 
+  protected final JSONObjectPreference mJSONPreference;
+
   protected final LongPreference mLongPreference;
+
+  protected final MapPreference mMapPreference;
 
   protected final SharedPreferences mSharedPreferences;
 
   protected final StringPreference mStringPreference;
 
-  private final JSONObjectPreference mJSONPreference;
-
-  private final StringSetPreference mStringSetPreference;
+  protected final StringSetPreference mStringSetPreference;
 
   public RxSharedPreferences(SharedPreferences sharedPreferences) {
     if (sharedPreferences == null) {
@@ -53,15 +56,20 @@ public class RxSharedPreferences {
     mBooleanPreference = new BooleanPreference(mSharedPreferences);
     mFloatPreference = new FloatPreference(mSharedPreferences);
     mIntegerPreference = new IntegerPreference(mSharedPreferences);
+    mJSONPreference = new JSONObjectPreference(mSharedPreferences);
     mLongPreference = new LongPreference(mSharedPreferences);
+    mMapPreference = new MapPreference(mSharedPreferences);
     mStringPreference = new StringPreference(mSharedPreferences);
     mStringSetPreference = new StringSetPreference(mSharedPreferences);
-    mJSONPreference = new JSONObjectPreference(mSharedPreferences);
   }
 
   public Boolean getBoolean(String key, Boolean defValue) {
     return mBooleanPreference.get(key, defValue);
   }
+
+  //public Map<String, Object> getMap(String key, Map<String, Object> defValue) {
+  //  return mMapPreference.get(key, defValue);
+  //}
 
   public Float getFloat(String key, Float defValue) {
     return mFloatPreference.get(key, defValue);
