@@ -67,10 +67,6 @@ public class RxSharedPreferences {
     return mBooleanPreference.get(key, defValue);
   }
 
-  //public Map<String, Object> getMap(String key, Map<String, Object> defValue) {
-  //  return mMapPreference.get(key, defValue);
-  //}
-
   public Float getFloat(String key, Float defValue) {
     return mFloatPreference.get(key, defValue);
   }
@@ -85,6 +81,10 @@ public class RxSharedPreferences {
 
   public Long getLong(String key, Long defValue) {
     return mLongPreference.get(key, defValue);
+  }
+
+  public Map<String, Object> getMap(String key, Map<String, Object> defValue) {
+    return mMapPreference.get(key, defValue);
   }
 
   public String getString(String key, String defValue) {
@@ -113,6 +113,10 @@ public class RxSharedPreferences {
 
   public Observable<Long> observeLong(String key, Long defValue) {
     return mLongPreference.observe(key, defValue);
+  }
+
+  public Observable<Map<String, Object>> observeMap(String key, Map<String, Object> defValue) {
+    return mMapPreference.observe(key, defValue);
   }
 
   public Observable<String> observeString(String key, String defValue) {
@@ -161,6 +165,14 @@ public class RxSharedPreferences {
 
   public void putLongInBackground(String key, Long value) {
     mLongPreference.putInBackground(key, value);
+  }
+
+  public void putMap(String key, Map<String, Object> value) {
+    mMapPreference.put(key, value);
+  }
+
+  public void putMapInBackground(String key, Map<String, Object> value) {
+    mMapPreference.putInBackground(key, value);
   }
 
   public void putString(String key, String value) {

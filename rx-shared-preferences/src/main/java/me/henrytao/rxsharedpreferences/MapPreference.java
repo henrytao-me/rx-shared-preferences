@@ -28,15 +28,16 @@ import java.util.Map;
 /**
  * Created by henrytao on 11/22/15.
  */
-public class MapPreference extends JSONObjectPreference {
+public class MapPreference extends BasePreference<Map<String, Object>> {
 
   public MapPreference(SharedPreferences sharedPreferences) {
     super(sharedPreferences);
   }
 
+  @Override
   protected Map<String, Object> getValue(String key, Map<String, Object> defValue) {
     Map<String, Object> res = new HashMap<>();
-    JSONObject jsonObject = super.getValue(key, new JSONObject(defValue));
+    JSONObject jsonObject = getValue(key, new JSONObject(defValue));
     if (jsonObject != null) {
       Iterator<String> keys = jsonObject.keys();
       while (keys.hasNext()) {
@@ -50,7 +51,25 @@ public class MapPreference extends JSONObjectPreference {
     return res;
   }
 
+  @Override
   protected void putValue(String key, Map<String, Object> value) {
-    super.putValue(key, new JSONObject(value));
+    putValue(key, new JSONObject(value));
+  }
+
+  private JSONObject getValue(String key, JSONObject defValue) {
+    String jsonString = mSharedPreferences.getString(key, null);
+    try {
+      return new JSONObject(jsonString);
+    } catch (Exception e) {
+      return defValue;
+    }
+  }
+
+  private void putValue(String key, JSONObject value) {
+    try {
+      String jsonString = value.toString();
+      mSharedPreferences.edit().putString(key, jsonString);
+    } catch (Exception ignore) {
+    }
   }
 }
