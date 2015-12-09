@@ -24,6 +24,11 @@ dependencies {
   compile fileTree(dir: "libs", include: ["*.jar"])
 
   compile rootProject.ext.dependencies["io.reactivex:rxjava"]
+
+  testCompile rootProject.ext.dependencies["junit:junit"]
+  testCompile rootProject.ext.dependencies["org.hamcrest:hamcrest-core"]
+  testCompile rootProject.ext.dependencies["org.hamcrest:hamcrest-library"]
+  testCompile rootProject.ext.dependencies["org.hamcrest:hamcrest-integration"]
 }
 
 apply from: "https://raw.githubusercontent.com/henrytao-me/bintray/master/installv1.gradle"
