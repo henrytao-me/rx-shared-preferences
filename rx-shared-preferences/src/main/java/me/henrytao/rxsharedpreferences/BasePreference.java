@@ -22,8 +22,7 @@ import android.text.TextUtils;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.noice.tornado.util.log.Ln;
-import io.noice.tornado.util.rx.transformer.SchedulerTransformer;
+import me.henrytao.rxsharedpreferences.util.log.Ln;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
@@ -67,11 +66,13 @@ public abstract class BasePreference<T> {
     mSubject
         .filter(keyValue -> keyValue != null && TextUtils.equals(keyValue.key, key))
         .map(keyValue -> keyValue.value)
-        .compose(SchedulerTransformer.computationToMainThread())
+        .subscribeOn(Schedulers.computation())
         .subscribe(t -> {
           subject.onNext(t);
         }, throwable -> {
-          Ln.d(this.getClass().getName(), "observe error | key: %s | value: %s", key, defValue.toString());
+          if (RxSharedPreferences.DEBUG) {
+            Ln.d(this.getClass().getName(), "observe error | key: %s | value: %s", key, defValue.toString());
+          }
         });
     return subject;
   }
@@ -85,9 +86,13 @@ public abstract class BasePreference<T> {
     Observable.create(subscriber -> put(key, value))
         .subscribeOn(Schedulers.computation())
         .subscribe(o -> {
-          Ln.d(this.getClass().getName(), "putInBackground succeed | key: %s | value: %s", key, value.toString());
+          if (RxSharedPreferences.DEBUG) {
+            Ln.d(this.getClass().getName(), "putInBackground succeed | key: %s | value: %s", key, value.toString());
+          }
         }, throwable -> {
-          Ln.w(this.getClass().getName(), "putInBackground error | key: %s | value: %s", key, value.toString());
+          if (RxSharedPreferences.DEBUG) {
+            Ln.w(this.getClass().getName(), "putInBackground error | key: %s | value: %s", key, value.toString());
+          }
         });
   }
 

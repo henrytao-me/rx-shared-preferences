@@ -30,6 +30,8 @@ import rx.Observable;
  */
 public class RxSharedPreferences {
 
+  public static boolean DEBUG = true;
+
   protected final BooleanPreference mBooleanPreference;
 
   protected final FloatPreference mFloatPreference;
