@@ -28,8 +28,11 @@ import org.robolectric.annotation.Config;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import rx.Subscription;
 import rx.observers.TestSubscriber;
@@ -103,6 +106,15 @@ public class RxSharePreferencesTest {
   public void getLongTest() {
     assertThat(mRxSharedPreferences.getLong(TEST_KEY, 10l), equalTo(10l));
     assertThat(mRxSharedPreferences.getLong(TEST_KEY, 20l), equalTo(20l));
+  }
+
+  @Test
+  public void getStringSetTest() {
+    List<String> o1 = Arrays.asList("a");
+    List<String> o2 = Arrays.asList("b");
+
+    assertThat(new ArrayList<>(mRxSharedPreferences.getStringSet(TEST_KEY, new HashSet<>(o1))).get(0), equalTo("a"));
+    assertThat(new ArrayList<>(mRxSharedPreferences.getStringSet(TEST_KEY, new HashSet<>(o2))).get(0), equalTo("b"));
   }
 
   @Test
@@ -191,6 +203,28 @@ public class RxSharePreferencesTest {
   }
 
   @Test
+  public void observeStringSetTest() {
+    List<String> o1 = Arrays.asList("a");
+    List<String> o2 = Arrays.asList("b");
+    List<String> o3 = Arrays.asList("c");
+    List<String> o4 = Arrays.asList("d");
+    List<String> o5 = Arrays.asList("e");
+
+    TestSubscriber<Set<String>> testSubscriber = new TestSubscriber<>();
+    Subscription subscription = mRxSharedPreferences.observeStringSet(TEST_KEY, new HashSet<>(o1)).subscribe(testSubscriber);
+    mRxSharedPreferences.putStringSet(TEST_KEY, new HashSet<>(o2));
+    mRxSharedPreferences.putStringSet(TEST_KEY, new HashSet<>(o3));
+    mRxSharedPreferences.putStringSet(TEST_KEY_2, new HashSet<>(o4));
+    subscription.unsubscribe();
+    mRxSharedPreferences.putStringSet(TEST_KEY, new HashSet<>(o5));
+    List<Set<String>> responses = testSubscriber.getOnNextEvents();
+    assertThat(responses.size(), equalTo(3));
+    assertThat(new ArrayList<>(responses.get(0)).get(0), equalTo("a"));
+    assertThat(new ArrayList<>(responses.get(1)).get(0), equalTo("b"));
+    assertThat(new ArrayList<>(responses.get(2)).get(0), equalTo("c"));
+  }
+
+  @Test
   public void observeStringTest() {
     TestSubscriber<String> testSubscriber = new TestSubscriber<>();
     Subscription subscription = mRxSharedPreferences.observeString(TEST_KEY, "a").subscribe(testSubscriber);
@@ -246,6 +280,17 @@ public class RxSharePreferencesTest {
     assertThat(mRxSharedPreferences.getLong(TEST_KEY, 10l), equalTo(10l));
     mRxSharedPreferences.putLong(TEST_KEY, 20l);
     assertThat(mRxSharedPreferences.getLong(TEST_KEY, 30l), equalTo(20l));
+  }
+
+  @Test
+  public void putStringSetTest() {
+    List<String> o1 = Arrays.asList("a");
+    List<String> o2 = Arrays.asList("b");
+    List<String> o3 = Arrays.asList("c");
+
+    assertThat(new ArrayList<>(mRxSharedPreferences.getStringSet(TEST_KEY, new HashSet<>(o1))).get(0), equalTo("a"));
+    mRxSharedPreferences.putStringSet(TEST_KEY, new HashSet<>(o2));
+    assertThat(new ArrayList<>(mRxSharedPreferences.getStringSet(TEST_KEY, new HashSet<>(o3))).get(0), equalTo("b"));
   }
 
   @Test
