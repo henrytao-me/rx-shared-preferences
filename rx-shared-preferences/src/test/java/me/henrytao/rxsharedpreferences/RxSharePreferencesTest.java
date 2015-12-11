@@ -67,6 +67,12 @@ public class RxSharePreferencesTest {
   }
 
   @Test
+  public void getFloatTest() {
+    assertThat(mRxSharedPreferences.getFloat(TEST_KEY, 10f), equalTo(10f));
+    assertThat(mRxSharedPreferences.getFloat(TEST_KEY, 20f), equalTo(20f));
+  }
+
+  @Test
   public void observeBooleanTest() {
     TestSubscriber<Boolean> testSubscriber = new TestSubscriber<>();
     Subscription subscription = mRxSharedPreferences.observeBoolean(TEST_KEY, false).subscribe(testSubscriber);
@@ -79,11 +85,38 @@ public class RxSharePreferencesTest {
   }
 
   @Test
+  public void observeFloatTest() {
+    TestSubscriber<Float> testSubscriber = new TestSubscriber<>();
+    Subscription subscription = mRxSharedPreferences.observeFloat(TEST_KEY, 10f).subscribe(testSubscriber);
+    mRxSharedPreferences.putFloat(TEST_KEY, 20f);
+    mRxSharedPreferences.putFloat(TEST_KEY, 30f);
+    mRxSharedPreferences.putFloat(TEST_KEY_2, 40f);
+    subscription.unsubscribe();
+    mRxSharedPreferences.putFloat(TEST_KEY, 50f);
+    testSubscriber.assertReceivedOnNext(Arrays.asList(10f, 20f, 30f));
+  }
+
+  @Test
   public void putBooleanTest() {
     assertThat(mRxSharedPreferences.getBoolean(TEST_KEY, false), equalTo(false));
     mRxSharedPreferences.putBoolean(TEST_KEY, true);
     assertThat(mRxSharedPreferences.getBoolean(TEST_KEY, false), equalTo(true));
     mRxSharedPreferences.putBoolean(TEST_KEY, false);
     assertThat(mRxSharedPreferences.getBoolean(TEST_KEY, true), equalTo(false));
+  }
+
+  @Test
+  public void putFloatTest() {
+    assertThat(mRxSharedPreferences.getFloat(TEST_KEY, 10f), equalTo(10f));
+    mRxSharedPreferences.putFloat(TEST_KEY, 20f);
+    assertThat(mRxSharedPreferences.getFloat(TEST_KEY, 30f), equalTo(20f));
+  }
+
+  @Test
+  public void resetTest() {
+    mRxSharedPreferences.putBoolean(TEST_KEY, true);
+    assertThat(mRxSharedPreferences.getBoolean(TEST_KEY, false), equalTo(true));
+    mRxSharedPreferences.reset();
+    assertThat(mRxSharedPreferences.getBoolean(TEST_KEY, false), equalTo(false));
   }
 }
