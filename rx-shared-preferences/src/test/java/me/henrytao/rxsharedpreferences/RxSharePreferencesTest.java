@@ -100,6 +100,12 @@ public class RxSharePreferencesTest {
   }
 
   @Test
+  public void getLongTest() {
+    assertThat(mRxSharedPreferences.getLong(TEST_KEY, 10l), equalTo(10l));
+    assertThat(mRxSharedPreferences.getLong(TEST_KEY, 20l), equalTo(20l));
+  }
+
+  @Test
   public void observeBooleanTest() {
     TestSubscriber<Boolean> testSubscriber = new TestSubscriber<>();
     Subscription subscription = mRxSharedPreferences.observeBoolean(TEST_KEY, false).subscribe(testSubscriber);
@@ -167,6 +173,18 @@ public class RxSharePreferencesTest {
   }
 
   @Test
+  public void observeLongTest() {
+    TestSubscriber<Long> testSubscriber = new TestSubscriber<>();
+    Subscription subscription = mRxSharedPreferences.observeLong(TEST_KEY, 10l).subscribe(testSubscriber);
+    mRxSharedPreferences.putLong(TEST_KEY, 20l);
+    mRxSharedPreferences.putLong(TEST_KEY, 30l);
+    mRxSharedPreferences.putLong(TEST_KEY_2, 40l);
+    subscription.unsubscribe();
+    mRxSharedPreferences.putLong(TEST_KEY, 50l);
+    testSubscriber.assertReceivedOnNext(Arrays.asList(10l, 20l, 30l));
+  }
+
+  @Test
   public void putBooleanTest() {
     assertThat(mRxSharedPreferences.getBoolean(TEST_KEY, false), equalTo(false));
     mRxSharedPreferences.putBoolean(TEST_KEY, true);
@@ -203,6 +221,13 @@ public class RxSharePreferencesTest {
     assertThat(mRxSharedPreferences.getJSONObject(TEST_KEY, o1).get("a"), equalTo("o1"));
     mRxSharedPreferences.putJSONObject(TEST_KEY, o2);
     assertThat(mRxSharedPreferences.getJSONObject(TEST_KEY, o3).get("a"), equalTo("o2"));
+  }
+
+  @Test
+  public void putLongTest() {
+    assertThat(mRxSharedPreferences.getLong(TEST_KEY, 10l), equalTo(10l));
+    mRxSharedPreferences.putLong(TEST_KEY, 20l);
+    assertThat(mRxSharedPreferences.getLong(TEST_KEY, 30l), equalTo(20l));
   }
 
   @Test
