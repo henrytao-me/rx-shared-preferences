@@ -19,14 +19,10 @@ package me.henrytao.rxsharedpreferences;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import me.henrytao.rxsharedpreferences.util.log.Ln;
 import rx.Observable;
-import rx.schedulers.Schedulers;
-import rx.subjects.BehaviorSubject;
+import rx.Subscription;
 import rx.subjects.PublishSubject;
+import rx.subscriptions.Subscriptions;
 
 /**
  * Created by henrytao on 11/22/15.
@@ -37,11 +33,9 @@ public abstract class BasePreference<T> {
 
   protected abstract void putValue(String key, T value);
 
-  protected final Map<String, T> mCached;
-
   protected final SharedPreferences mSharedPreferences;
 
-  protected PublishSubject<KeyValue<T>> mSubject;
+  protected PublishSubject<String> mSubject;
 
   public BasePreference(SharedPreferences sharedPreferences) {
     if (sharedPreferences == null) {
@@ -49,66 +43,26 @@ public abstract class BasePreference<T> {
     }
     mSubject = PublishSubject.create();
     mSharedPreferences = sharedPreferences;
-    mCached = new HashMap<>();
+
+    mSharedPreferences.registerOnSharedPreferenceChangeListener((preferences, key) -> mSubject.onNext(key));
   }
 
   public T get(String key, T defValue) {
-    if (mCached.containsKey(key)) {
-      return mCached.get(key);
-    }
-    T value = getValue(key, defValue);
-    addToCache(key, value);
-    return value;
+    return getValue(key, defValue);
   }
 
   public Observable<T> observe(String key, T defValue) {
-    BehaviorSubject<T> subject = BehaviorSubject.create(get(key, defValue));
-    mSubject
-        .filter(keyValue -> keyValue != null && TextUtils.equals(keyValue.key, key))
-        .map(keyValue -> keyValue.value)
-        .subscribeOn(Schedulers.computation())
-        .subscribe(t -> {
-          subject.onNext(t);
-        }, throwable -> {
-          if (RxSharedPreferences.DEBUG) {
-            Ln.d(this.getClass().getName(), "observe error | key: %s | value: %s", key, defValue.toString());
-          }
-        });
-    return subject;
+    return Observable.create(subscriber -> {
+      subscriber.onNext(get(key, defValue));
+      Subscription subjectSubscription = mSubject
+          .filter(k -> TextUtils.equals(k, key))
+          .map(k -> get(key, defValue))
+          .subscribe(subscriber::onNext);
+      subscriber.add(Subscriptions.create(subjectSubscription::unsubscribe));
+    });
   }
 
   public void put(String key, T value) {
     putValue(key, value);
-    addToCache(key, value);
-  }
-
-  public void putInBackground(String key, T value) {
-    Observable.create(subscriber -> put(key, value))
-        .subscribeOn(Schedulers.computation())
-        .subscribe(o -> {
-          if (RxSharedPreferences.DEBUG) {
-            Ln.d(this.getClass().getName(), "putInBackground succeed | key: %s | value: %s", key, value.toString());
-          }
-        }, throwable -> {
-          if (RxSharedPreferences.DEBUG) {
-            Ln.w(this.getClass().getName(), "putInBackground error | key: %s | value: %s", key, value.toString());
-          }
-        });
-  }
-
-  protected void addToCache(String key, T value) {
-    mCached.put(key, value);
-  }
-
-  protected static class KeyValue<E> {
-
-    String key;
-
-    E value;
-
-    public KeyValue(String key, E value) {
-      this.key = key;
-      this.value = value;
-    }
   }
 }

@@ -97,8 +97,8 @@ public class RxSharedPreferences {
     return mStringSetPreference.get(key, defValue);
   }
 
-  public Observable<JSONObject> observeBoolean(String key, JSONObject defValue) {
-    return mJSONPreference.observe(key, defValue);
+  public Observable<Boolean> observeBoolean(String key, Boolean defValue) {
+    return mBooleanPreference.observe(key, defValue);
   }
 
   public Observable<Float> observeFloat(String key, Float defValue) {
@@ -109,8 +109,8 @@ public class RxSharedPreferences {
     return mIntegerPreference.observe(key, defValue);
   }
 
-  public Observable<Boolean> observeJSONObject(String key, Boolean defValue) {
-    return mBooleanPreference.observe(key, defValue);
+  public Observable<JSONObject> observeJSONObject(String key, JSONObject defValue) {
+    return mJSONPreference.observe(key, defValue);
   }
 
   public Observable<Long> observeLong(String key, Long defValue) {
@@ -133,63 +133,39 @@ public class RxSharedPreferences {
     mBooleanPreference.put(key, value);
   }
 
-  public void putBooleanInBackground(String key, Boolean value) {
-    mBooleanPreference.putInBackground(key, value);
-  }
-
   public void putFloat(String key, Float value) {
     mFloatPreference.put(key, value);
-  }
-
-  public void putFloatInBackground(String key, Float value) {
-    mFloatPreference.putInBackground(key, value);
   }
 
   public void putInt(String key, Integer value) {
     mIntegerPreference.put(key, value);
   }
 
-  public void putIntInBackground(String key, Integer value) {
-    mIntegerPreference.putInBackground(key, value);
-  }
-
   public void putJSONObject(String key, JSONObject value) {
     mJSONPreference.put(key, value);
-  }
-
-  public void putJSONObjectInBackground(String key, JSONObject value) {
-    mJSONPreference.putInBackground(key, value);
   }
 
   public void putLong(String key, Long value) {
     mLongPreference.put(key, value);
   }
 
-  public void putLongInBackground(String key, Long value) {
-    mLongPreference.putInBackground(key, value);
-  }
-
   public void putMap(String key, Map<String, Object> value) {
     mMapPreference.put(key, value);
-  }
-
-  public void putMapInBackground(String key, Map<String, Object> value) {
-    mMapPreference.putInBackground(key, value);
   }
 
   public void putString(String key, String value) {
     mStringPreference.put(key, value);
   }
 
-  public void putStringInBackground(String key, String value) {
-    mStringPreference.putInBackground(key, value);
-  }
-
   public void putStringSet(String key, Set<String> value) {
     mStringSetPreference.put(key, value);
   }
 
-  public void putStringSetInBackground(String key, Set<String> value) {
-    mStringSetPreference.putInBackground(key, value);
+  public void reset() {
+    mSharedPreferences.edit().clear().commit();
+  }
+
+  public void reset(Map<String, Object> keeps) {
+
   }
 }

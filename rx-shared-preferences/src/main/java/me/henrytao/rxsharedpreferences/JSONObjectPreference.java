@@ -20,6 +20,10 @@ import org.json.JSONObject;
 
 import android.content.SharedPreferences;
 
+import java.util.Locale;
+
+import me.henrytao.rxsharedpreferences.util.log.Ln;
+
 /**
  * Created by henrytao on 11/22/15.
  */
@@ -35,6 +39,9 @@ public class JSONObjectPreference extends BasePreference<JSONObject> {
     try {
       return new JSONObject(jsonString);
     } catch (Exception e) {
+      if (RxSharedPreferences.DEBUG) {
+        Ln.d(String.format(Locale.US, "%s/%s", JSONObjectPreference.class.getName(), "getValue"), e);
+      }
       return defValue;
     }
   }
@@ -43,8 +50,11 @@ public class JSONObjectPreference extends BasePreference<JSONObject> {
   protected void putValue(String key, JSONObject value) {
     try {
       String jsonString = value.toString();
-      mSharedPreferences.edit().putString(key, jsonString);
+      mSharedPreferences.edit().putString(key, jsonString).apply();
     } catch (Exception ignore) {
+      if (RxSharedPreferences.DEBUG) {
+        Ln.d(String.format(Locale.US, "%s/%s", JSONObjectPreference.class.getName(), "putValue"), ignore);
+      }
     }
   }
 }

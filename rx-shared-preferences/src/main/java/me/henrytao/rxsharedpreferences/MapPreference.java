@@ -68,7 +68,7 @@ public class MapPreference extends BasePreference<Map<String, Object>> {
   private void putValue(String key, JSONObject value) {
     try {
       String jsonString = value.toString();
-      mSharedPreferences.edit().putString(key, jsonString);
+      mSharedPreferences.edit().putString(key, jsonString).apply();
     } catch (Exception ignore) {
     }
   }
