@@ -56,7 +56,7 @@ public abstract class BasePreference<T> {
       subscriber.onNext(get(key, defValue));
       Subscription subjectSubscription = mSubject
           .filter(k -> TextUtils.equals(k, key))
-          .map(k -> getValue(key, defValue))
+          .map(k -> get(key, defValue))
           .subscribe(subscriber::onNext);
       subscriber.add(Subscriptions.create(subjectSubscription::unsubscribe));
     });
@@ -64,21 +64,5 @@ public abstract class BasePreference<T> {
 
   public void put(String key, T value) {
     putValue(key, value);
-  }
-
-  public Observable<T> putInBackground(String key, T value) {
-    return Observable.create(subscriber -> {
-      try {
-        put(key, value);
-        if (!subscriber.isUnsubscribed()) {
-          subscriber.onNext(value);
-          subscriber.onCompleted();
-        }
-      } catch (Exception e) {
-        if (!subscriber.isUnsubscribed()) {
-          subscriber.onError(e);
-        }
-      }
-    });
   }
 }

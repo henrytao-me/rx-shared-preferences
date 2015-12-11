@@ -16,6 +16,8 @@
 
 package me.henrytao.rxsharedpreferences;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,6 +29,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import java.util.Arrays;
+import java.util.List;
 
 import rx.Subscription;
 import rx.observers.TestSubscriber;
@@ -79,6 +82,24 @@ public class RxSharePreferencesTest {
   }
 
   @Test
+  public void getJSONObjectTest() throws JSONException {
+    JSONObject o1 = new JSONObject();
+    o1.put("a", "hello moto");
+    o1.put("b", 2);
+
+    JSONObject o2 = new JSONObject();
+    o2.put("a", "hello moto");
+    o2.put("b", 2);
+    o2.put("c", true);
+
+    assertThat(mRxSharedPreferences.getJSONObject(TEST_KEY, o1).get("a"), equalTo("hello moto"));
+    assertThat(mRxSharedPreferences.getJSONObject(TEST_KEY, o1).get("b"), equalTo(2));
+    assertThat(mRxSharedPreferences.getJSONObject(TEST_KEY, o2).get("a"), equalTo("hello moto"));
+    assertThat(mRxSharedPreferences.getJSONObject(TEST_KEY, o2).get("b"), equalTo(2));
+    assertThat(mRxSharedPreferences.getJSONObject(TEST_KEY, o2).get("c"), equalTo(true));
+  }
+
+  @Test
   public void observeBooleanTest() {
     TestSubscriber<Boolean> testSubscriber = new TestSubscriber<>();
     Subscription subscription = mRxSharedPreferences.observeBoolean(TEST_KEY, false).subscribe(testSubscriber);
@@ -115,6 +136,37 @@ public class RxSharePreferencesTest {
   }
 
   @Test
+  public void observeJSONObjectTest() throws JSONException {
+    JSONObject o1 = new JSONObject();
+    o1.put("a", "o1");
+
+    JSONObject o2 = new JSONObject();
+    o2.put("a", "o2");
+
+    JSONObject o3 = new JSONObject();
+    o3.put("a", "o3");
+
+    JSONObject o4 = new JSONObject();
+    o4.put("a", "o4");
+
+    JSONObject o5 = new JSONObject();
+    o5.put("a", "o5");
+
+    TestSubscriber<JSONObject> testSubscriber = new TestSubscriber<>();
+    Subscription subscription = mRxSharedPreferences.observeJSONObject(TEST_KEY, o1).subscribe(testSubscriber);
+    mRxSharedPreferences.putJSONObject(TEST_KEY, o2);
+    mRxSharedPreferences.putJSONObject(TEST_KEY, o3);
+    mRxSharedPreferences.putJSONObject(TEST_KEY_2, o4);
+    subscription.unsubscribe();
+    mRxSharedPreferences.putJSONObject(TEST_KEY, o5);
+    List<JSONObject> responses = testSubscriber.getOnNextEvents();
+    assertThat(responses.size(), equalTo(3));
+    assertThat(responses.get(0).get("a"), equalTo("o1"));
+    assertThat(responses.get(1).get("a"), equalTo("o2"));
+    assertThat(responses.get(2).get("a"), equalTo("o3"));
+  }
+
+  @Test
   public void putBooleanTest() {
     assertThat(mRxSharedPreferences.getBoolean(TEST_KEY, false), equalTo(false));
     mRxSharedPreferences.putBoolean(TEST_KEY, true);
@@ -135,6 +187,22 @@ public class RxSharePreferencesTest {
     assertThat(mRxSharedPreferences.getInt(TEST_KEY, 10), equalTo(10));
     mRxSharedPreferences.putInt(TEST_KEY, 20);
     assertThat(mRxSharedPreferences.getInt(TEST_KEY, 30), equalTo(20));
+  }
+
+  @Test
+  public void putJSONObjectTest() throws JSONException {
+    JSONObject o1 = new JSONObject();
+    o1.put("a", "o1");
+
+    JSONObject o2 = new JSONObject();
+    o2.put("a", "o2");
+
+    JSONObject o3 = new JSONObject();
+    o3.put("a", "o3");
+
+    assertThat(mRxSharedPreferences.getJSONObject(TEST_KEY, o1).get("a"), equalTo("o1"));
+    mRxSharedPreferences.putJSONObject(TEST_KEY, o2);
+    assertThat(mRxSharedPreferences.getJSONObject(TEST_KEY, o3).get("a"), equalTo("o2"));
   }
 
   @Test

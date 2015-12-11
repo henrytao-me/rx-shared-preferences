@@ -133,64 +133,32 @@ public class RxSharedPreferences {
     mBooleanPreference.put(key, value);
   }
 
-  public Observable<Boolean> putBooleanInBackground(String key, Boolean value) {
-    return mBooleanPreference.putInBackground(key, value);
-  }
-
   public void putFloat(String key, Float value) {
     mFloatPreference.put(key, value);
-  }
-
-  public Observable<Float> putFloatInBackground(String key, Float value) {
-    return mFloatPreference.putInBackground(key, value);
   }
 
   public void putInt(String key, Integer value) {
     mIntegerPreference.put(key, value);
   }
 
-  public Observable<Integer> putIntInBackground(String key, Integer value) {
-    return mIntegerPreference.putInBackground(key, value);
-  }
-
   public void putJSONObject(String key, JSONObject value) {
     mJSONPreference.put(key, value);
-  }
-
-  public Observable<JSONObject> putJSONObjectInBackground(String key, JSONObject value) {
-    return mJSONPreference.putInBackground(key, value);
   }
 
   public void putLong(String key, Long value) {
     mLongPreference.put(key, value);
   }
 
-  public Observable<Long> putLongInBackground(String key, Long value) {
-    return mLongPreference.putInBackground(key, value);
-  }
-
   public void putMap(String key, Map<String, Object> value) {
     mMapPreference.put(key, value);
-  }
-
-  public Observable<Map<String, Object>> putMapInBackground(String key, Map<String, Object> value) {
-    return mMapPreference.putInBackground(key, value);
   }
 
   public void putString(String key, String value) {
     mStringPreference.put(key, value);
   }
 
-  public Observable<String> putStringInBackground(String key, String value) {
-    return mStringPreference.putInBackground(key, value);
-  }
-
   public void putStringSet(String key, Set<String> value) {
     mStringSetPreference.put(key, value);
-  }
-
-  public Observable<Set<String>> putStringSetInBackground(String key, Set<String> value) {
-    return mStringSetPreference.putInBackground(key, value);
   }
 
   public void reset() {
