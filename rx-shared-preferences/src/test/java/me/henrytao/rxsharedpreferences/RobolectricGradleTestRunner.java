@@ -16,17 +16,16 @@
 
 package me.henrytao.rxsharedpreferences;
 
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
+import org.junit.runners.model.InitializationError;
 
 /**
- * To work on unit tests, switch the Test Artifact in the Build Variants view.
+ * Created by henrytao on 12/11/15.
  */
-public class ExampleUnitTest {
+public class RobolectricGradleTestRunner extends org.robolectric.RobolectricGradleTestRunner {
 
-  @Test
-  public void addition_isCorrect() throws Exception {
-    assertEquals(4, 2 + 2);
+  public static final int SDK = 21;
+
+  public RobolectricGradleTestRunner(Class<?> klass) throws InitializationError {
+    super(klass);
   }
 }
