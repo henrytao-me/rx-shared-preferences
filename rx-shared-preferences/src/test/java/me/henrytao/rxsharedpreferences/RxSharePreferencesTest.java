@@ -73,6 +73,12 @@ public class RxSharePreferencesTest {
   }
 
   @Test
+  public void getIntTest() {
+    assertThat(mRxSharedPreferences.getInt(TEST_KEY, 10), equalTo(10));
+    assertThat(mRxSharedPreferences.getInt(TEST_KEY, 20), equalTo(20));
+  }
+
+  @Test
   public void observeBooleanTest() {
     TestSubscriber<Boolean> testSubscriber = new TestSubscriber<>();
     Subscription subscription = mRxSharedPreferences.observeBoolean(TEST_KEY, false).subscribe(testSubscriber);
@@ -97,6 +103,18 @@ public class RxSharePreferencesTest {
   }
 
   @Test
+  public void observeIntTest() {
+    TestSubscriber<Integer> testSubscriber = new TestSubscriber<>();
+    Subscription subscription = mRxSharedPreferences.observeInt(TEST_KEY, 10).subscribe(testSubscriber);
+    mRxSharedPreferences.putInt(TEST_KEY, 20);
+    mRxSharedPreferences.putInt(TEST_KEY, 30);
+    mRxSharedPreferences.putInt(TEST_KEY_2, 40);
+    subscription.unsubscribe();
+    mRxSharedPreferences.putInt(TEST_KEY, 50);
+    testSubscriber.assertReceivedOnNext(Arrays.asList(10, 20, 30));
+  }
+
+  @Test
   public void putBooleanTest() {
     assertThat(mRxSharedPreferences.getBoolean(TEST_KEY, false), equalTo(false));
     mRxSharedPreferences.putBoolean(TEST_KEY, true);
@@ -110,6 +128,13 @@ public class RxSharePreferencesTest {
     assertThat(mRxSharedPreferences.getFloat(TEST_KEY, 10f), equalTo(10f));
     mRxSharedPreferences.putFloat(TEST_KEY, 20f);
     assertThat(mRxSharedPreferences.getFloat(TEST_KEY, 30f), equalTo(20f));
+  }
+
+  @Test
+  public void putIntTest() {
+    assertThat(mRxSharedPreferences.getInt(TEST_KEY, 10), equalTo(10));
+    mRxSharedPreferences.putInt(TEST_KEY, 20);
+    assertThat(mRxSharedPreferences.getInt(TEST_KEY, 30), equalTo(20));
   }
 
   @Test
