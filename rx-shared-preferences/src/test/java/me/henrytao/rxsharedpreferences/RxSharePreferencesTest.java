@@ -30,8 +30,10 @@ import android.content.SharedPreferences;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import rx.Subscription;
@@ -106,6 +108,18 @@ public class RxSharePreferencesTest {
   public void getLongTest() {
     assertThat(mRxSharedPreferences.getLong(TEST_KEY, 10l), equalTo(10l));
     assertThat(mRxSharedPreferences.getLong(TEST_KEY, 20l), equalTo(20l));
+  }
+
+  @Test
+  public void getMapTest() {
+    Map<String, String> o1 = new HashMap<>();
+    o1.put("a", "a");
+
+    Map<String, Integer> o2 = new HashMap<>();
+    o2.put("a", 1);
+
+    assertThat(mRxSharedPreferences.getMap(TEST_KEY, o1).get("a"), equalTo("a"));
+    assertThat(mRxSharedPreferences.getMap(TEST_KEY, o2).get("a"), equalTo(1));
   }
 
   @Test
@@ -203,6 +217,37 @@ public class RxSharePreferencesTest {
   }
 
   @Test
+  public void observeMapTest() {
+    Map<String, String> o1 = new HashMap<>();
+    o1.put("a", "a");
+
+    Map<String, Integer> o2 = new HashMap<>();
+    o2.put("a", 1);
+
+    Map<String, Boolean> o3 = new HashMap<>();
+    o3.put("a", false);
+
+    Map<String, Long> o4 = new HashMap<>();
+    o4.put("a", 10l);
+
+    Map<String, Float> o5 = new HashMap<>();
+    o5.put("a", 1.5f);
+
+    TestSubscriber<Map<String, ?>> testSubscriber = new TestSubscriber<>();
+    Subscription subscription = mRxSharedPreferences.observeMap(TEST_KEY, o1).subscribe(testSubscriber);
+    mRxSharedPreferences.putMap(TEST_KEY, o2);
+    mRxSharedPreferences.putMap(TEST_KEY, o3);
+    mRxSharedPreferences.putMap(TEST_KEY_2, o4);
+    subscription.unsubscribe();
+    mRxSharedPreferences.putMap(TEST_KEY, o5);
+    List<Map<String, ?>> responses = testSubscriber.getOnNextEvents();
+    assertThat(responses.size(), equalTo(3));
+    assertThat(responses.get(0).get("a"), equalTo("a"));
+    assertThat(responses.get(1).get("a"), equalTo(1));
+    assertThat(responses.get(2).get("a"), equalTo(false));
+  }
+
+  @Test
   public void observeStringSetTest() {
     List<String> o1 = Arrays.asList("a");
     List<String> o2 = Arrays.asList("b");
@@ -280,6 +325,22 @@ public class RxSharePreferencesTest {
     assertThat(mRxSharedPreferences.getLong(TEST_KEY, 10l), equalTo(10l));
     mRxSharedPreferences.putLong(TEST_KEY, 20l);
     assertThat(mRxSharedPreferences.getLong(TEST_KEY, 30l), equalTo(20l));
+  }
+
+  @Test
+  public void putMapTest() {
+    Map<String, String> o1 = new HashMap<>();
+    o1.put("a", "a");
+
+    Map<String, Integer> o2 = new HashMap<>();
+    o2.put("a", 1);
+
+    Map<String, Boolean> o3 = new HashMap<>();
+    o3.put("a", false);
+
+    assertThat(mRxSharedPreferences.getMap(TEST_KEY, o1).get("a"), equalTo("a"));
+    mRxSharedPreferences.putMap(TEST_KEY, o2);
+    assertThat(mRxSharedPreferences.getMap(TEST_KEY, o3).get("a"), equalTo(1));
   }
 
   @Test

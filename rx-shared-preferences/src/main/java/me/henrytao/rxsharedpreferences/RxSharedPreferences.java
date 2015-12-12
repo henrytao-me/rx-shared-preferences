@@ -85,7 +85,7 @@ public class RxSharedPreferences {
     return mLongPreference.get(key, defValue);
   }
 
-  public Map<String, Object> getMap(String key, Map<String, Object> defValue) {
+  public Map<String, ?> getMap(String key, Map<String, ?> defValue) {
     return mMapPreference.get(key, defValue);
   }
 
@@ -117,7 +117,7 @@ public class RxSharedPreferences {
     return mLongPreference.observe(key, defValue);
   }
 
-  public Observable<Map<String, Object>> observeMap(String key, Map<String, Object> defValue) {
+  public Observable<Map<String, ?>> observeMap(String key, Map<String, ?> defValue) {
     return mMapPreference.observe(key, defValue);
   }
 
@@ -149,7 +149,7 @@ public class RxSharedPreferences {
     mLongPreference.put(key, value);
   }
 
-  public void putMap(String key, Map<String, Object> value) {
+  public void putMap(String key, Map<String, ?> value) {
     mMapPreference.put(key, value);
   }
 
