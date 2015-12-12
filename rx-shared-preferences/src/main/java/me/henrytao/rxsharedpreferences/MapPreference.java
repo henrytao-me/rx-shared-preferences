@@ -28,14 +28,14 @@ import java.util.Map;
 /**
  * Created by henrytao on 11/22/15.
  */
-public class MapPreference extends BasePreference<Map<String, Object>> {
+public class MapPreference extends BasePreference<Map<String, ?>> {
 
   public MapPreference(SharedPreferences sharedPreferences) {
     super(sharedPreferences);
   }
 
   @Override
-  protected Map<String, Object> getValue(String key, Map<String, Object> defValue) {
+  protected Map<String, ?> getValue(String key, Map<String, ?> defValue) {
     Map<String, Object> res = new HashMap<>();
     JSONObject jsonObject = getValue(key, new JSONObject(defValue));
     if (jsonObject != null) {
@@ -52,7 +52,7 @@ public class MapPreference extends BasePreference<Map<String, Object>> {
   }
 
   @Override
-  protected void putValue(String key, Map<String, Object> value) {
+  protected void putValue(String key, Map<String, ?> value) {
     putValue(key, new JSONObject(value));
   }
 
