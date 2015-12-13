@@ -20,6 +20,8 @@ import org.json.JSONObject;
 
 import android.content.SharedPreferences;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -44,6 +46,8 @@ public class RxSharedPreferences {
 
   protected final MapPreference mMapPreference;
 
+  protected final List<BasePreference> mRegisteredPreferences;
+
   protected final SharedPreferences mSharedPreferences;
 
   protected final StringPreference mStringPreference;
@@ -63,6 +67,16 @@ public class RxSharedPreferences {
     mMapPreference = new MapPreference(mSharedPreferences);
     mStringPreference = new StringPreference(mSharedPreferences);
     mStringSetPreference = new StringSetPreference(mSharedPreferences);
+
+    mRegisteredPreferences = new ArrayList<>();
+    register(mBooleanPreference);
+    register(mFloatPreference);
+    register(mIntegerPreference);
+    register(mJSONPreference);
+    register(mLongPreference);
+    register(mMapPreference);
+    register(mStringPreference);
+    register(mStringSetPreference);
   }
 
   public Boolean getBoolean(String key, Boolean defValue) {
@@ -162,10 +176,17 @@ public class RxSharedPreferences {
   }
 
   public void reset() {
-    mSharedPreferences.edit().clear().commit();
+    int i = 0;
+    for (int n = mRegisteredPreferences.size(); i < n; i++) {
+      mRegisteredPreferences.get(i).reset();
+    }
   }
 
-  public void reset(Map<String, Object> keeps) {
+  public void resetButKeep(List<String> keys) {
 
+  }
+
+  protected void register(BasePreference basePreference) {
+    mRegisteredPreferences.add(basePreference);
   }
 }

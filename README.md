@@ -1,21 +1,55 @@
-[ ![Download](https://api.bintray.com/packages/henrytao-me/maven/bootstrap-android-library/images/download.svg) ](https://bintray.com/henrytao-me/maven/bootstrap-android-library/_latestVersion)
+[ ![Download](https://api.bintray.com/packages/henrytao-me/maven/rx-shared-preferences/images/download.svg) ](https://bintray.com/henrytao-me/maven/rx-shared-preferences/_latestVersion)
 
-bootstrap-android-library
+rx-shared-preferences
 ================
 
-Bootstrapping android library
+RxJava SharedPreferences for Android, lightweight and extendable 
 
 
-## Configuration
+## Installation
 
-1. Rename `library` module to your library name. Ex: `bootstrap-android-library`
-2. Check out some of these files: `config.gradle`, `sample/src/main/res/values/strings.xml`
-3. Setup bintray account and add these information into project `local.properties`
-
+``` groovy
+compile "me.henrytao:rx-shared-preferences:<latest-version>"
 ```
-bintray.apikey=xxx
-bintray.user=xxx
-bintray.gpg.password=xxx
+
+`rx-shared-preferences` is deployed to `jCenter`. Make sure you have `jcenter()` in your project gradle.
+
+## Features
+
+- Boolean
+- Float
+- Integer
+- JSONObject
+- Long
+- Map
+- String
+- StringSet
+
+
+## Usage
+
+``` java
+mSharedPreferences = context.getSharedPreferences(PREFERENCES_KEY, Context.MODE_PRIVATE);
+mRxSharedPreferences = new RxSharedPreferences(mSharedPreferences);
+
+assertThat(mRxSharedPreferences.getBoolean(TEST_KEY, true), equalTo(true));
+assertThat(mRxSharedPreferences.getBoolean(TEST_KEY, false), equalTo(false));
+
+assertThat(mRxSharedPreferences.getBoolean(TEST_KEY, false), equalTo(false));
+mRxSharedPreferences.putBoolean(TEST_KEY, true);
+assertThat(mRxSharedPreferences.getBoolean(TEST_KEY, false), equalTo(true));
+mRxSharedPreferences.putBoolean(TEST_KEY, false);
+assertThat(mRxSharedPreferences.getBoolean(TEST_KEY, true), equalTo(false));
+
+TestSubscriber<Boolean> testSubscriber = new TestSubscriber<>();
+Subscription subscription = mRxSharedPreferences.observeBoolean(TEST_KEY, false).subscribe(testSubscriber);
+mRxSharedPreferences.putBoolean(TEST_KEY, true);
+mRxSharedPreferences.putBoolean(TEST_KEY, false);
+mRxSharedPreferences.putBoolean(TEST_KEY_2, true);
+subscription.unsubscribe();
+mRxSharedPreferences.putBoolean(TEST_KEY, false);
+testSubscriber.assertReceivedOnNext(Arrays.asList(false, true, false));
+
 ```
 
 
