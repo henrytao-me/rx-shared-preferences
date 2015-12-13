@@ -75,12 +75,23 @@ public abstract class BasePreference<T> {
   }
 
   public void reset() {
+    resetButKeep(null);
+  }
+
+  public void resetButKeep(List<String> keys) {
+    keys = keys != null ? keys : new ArrayList<>();
     if (mIndexes.size() > 0) {
+      List<String> keepIndexes = new ArrayList<>();
       int i = 0;
       for (int n = mIndexes.size(); i < n; i++) {
-        mSharedPreferences.edit().remove(mIndexes.get(i)).commit();
+        if (keys.indexOf(mIndexes.get(i)) < 0) {
+          mSharedPreferences.edit().remove(mIndexes.get(i)).commit();
+        } else {
+          keepIndexes.add(mIndexes.get(i));
+        }
       }
       mIndexes.clear();
+      mIndexes.addAll(keepIndexes);
     }
   }
 

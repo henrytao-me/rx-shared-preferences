@@ -183,7 +183,10 @@ public class RxSharedPreferences {
   }
 
   public void resetButKeep(List<String> keys) {
-
+    int i = 0;
+    for (int n = mRegisteredPreferences.size(); i < n; i++) {
+      mRegisteredPreferences.get(i).resetButKeep(keys);
+    }
   }
 
   protected void register(BasePreference basePreference) {

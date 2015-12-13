@@ -24,23 +24,28 @@ compile "me.henrytao:rx-shared-preferences:<latest-version>"
 - Map
 - String
 - StringSet
+- ResetButKeep
 
 
 ## Usage
 
 ``` java
+// init
 mSharedPreferences = context.getSharedPreferences(PREFERENCES_KEY, Context.MODE_PRIVATE);
 mRxSharedPreferences = new RxSharedPreferences(mSharedPreferences);
 
+// test get
 assertThat(mRxSharedPreferences.getBoolean(TEST_KEY, true), equalTo(true));
 assertThat(mRxSharedPreferences.getBoolean(TEST_KEY, false), equalTo(false));
 
+// test put
 assertThat(mRxSharedPreferences.getBoolean(TEST_KEY, false), equalTo(false));
 mRxSharedPreferences.putBoolean(TEST_KEY, true);
 assertThat(mRxSharedPreferences.getBoolean(TEST_KEY, false), equalTo(true));
 mRxSharedPreferences.putBoolean(TEST_KEY, false);
 assertThat(mRxSharedPreferences.getBoolean(TEST_KEY, true), equalTo(false));
 
+// test observe
 TestSubscriber<Boolean> testSubscriber = new TestSubscriber<>();
 Subscription subscription = mRxSharedPreferences.observeBoolean(TEST_KEY, false).subscribe(testSubscriber);
 mRxSharedPreferences.putBoolean(TEST_KEY, true);
@@ -50,6 +55,19 @@ subscription.unsubscribe();
 mRxSharedPreferences.putBoolean(TEST_KEY, false);
 testSubscriber.assertReceivedOnNext(Arrays.asList(false, true, false));
 
+// test resetButKeep
+mRxSharedPreferences.putBoolean("a", true);
+mRxSharedPreferences.putFloat("b", 1.5f);
+mRxSharedPreferences.putInt("c", 10);
+
+assertThat(mRxSharedPreferences.getBoolean("a", false), equalTo(true));
+assertThat(mRxSharedPreferences.getFloat("b", 0f), equalTo(1.5f));
+assertThat(mRxSharedPreferences.getInt("c", 0), equalTo(10));
+
+mRxSharedPreferences.resetButKeep(Arrays.asList("a"));
+assertThat(mRxSharedPreferences.getBoolean("a", false), equalTo(true));
+assertThat(mRxSharedPreferences.getFloat("b", 0f), equalTo(0f));
+assertThat(mRxSharedPreferences.getInt("c", 0), equalTo(0));
 ```
 
 
