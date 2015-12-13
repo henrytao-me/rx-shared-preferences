@@ -19,6 +19,9 @@ package me.henrytao.rxsharedpreferences;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import rx.Observable;
 import rx.Subscription;
 import rx.subjects.PublishSubject;
@@ -35,23 +38,27 @@ public abstract class BasePreference<T> {
 
   protected final SharedPreferences mSharedPreferences;
 
+  protected List<String> mIndexes;
+
   protected PublishSubject<String> mSubject;
 
   public BasePreference(SharedPreferences sharedPreferences) {
     if (sharedPreferences == null) {
       throw new RuntimeException("SharedPreferences can not be null");
     }
+    mIndexes = new ArrayList<>();
     mSubject = PublishSubject.create();
     mSharedPreferences = sharedPreferences;
-
     mSharedPreferences.registerOnSharedPreferenceChangeListener((preferences, key) -> mSubject.onNext(key));
   }
 
   public T get(String key, T defValue) {
+    addToIndex(key);
     return getValue(key, defValue);
   }
 
   public Observable<T> observe(String key, T defValue) {
+    addToIndex(key);
     return Observable.create(subscriber -> {
       subscriber.onNext(get(key, defValue));
       Subscription subjectSubscription = mSubject
@@ -63,6 +70,23 @@ public abstract class BasePreference<T> {
   }
 
   public void put(String key, T value) {
+    addToIndex(key);
     putValue(key, value);
+  }
+
+  public void reset() {
+    if (mIndexes.size() > 0) {
+      int i = 0;
+      for (int n = mIndexes.size(); i < n; i++) {
+        mSharedPreferences.edit().remove(mIndexes.get(i)).commit();
+      }
+      mIndexes.clear();
+    }
+  }
+
+  protected void addToIndex(String key) {
+    if (mIndexes.indexOf(key) < 0) {
+      mIndexes.add(key);
+    }
   }
 }

@@ -1,1 +1,1 @@
-include ':sample', ':rx-shared-preferences'
+include ':rx-shared-preferences'

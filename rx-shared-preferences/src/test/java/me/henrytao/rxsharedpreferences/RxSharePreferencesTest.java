@@ -362,10 +362,37 @@ public class RxSharePreferencesTest {
   }
 
   @Test
+  public void resetKeepTest() {
+    mRxSharedPreferences.putBoolean("a", true);
+    mRxSharedPreferences.putFloat("b", 1.5f);
+    mRxSharedPreferences.putInt("c", 10);
+
+    assertThat(mRxSharedPreferences.getBoolean("a", false), equalTo(true));
+    assertThat(mRxSharedPreferences.getFloat("b", 0f), equalTo(1.5f));
+    assertThat(mRxSharedPreferences.getInt("c", 0), equalTo(10));
+
+    //keeps.put("a", BooleanPreference.class);
+    //keeps.put("a", BooleanPreference.class);
+    //keeps.put("a", BooleanPreference.class);
+    //mRxSharedPreferences.reset(keeps);
+  }
+
+  @Test
   public void resetTest() {
+    TestSubscriber<Boolean> testSubscriber = new TestSubscriber<>();
+    Subscription subscription = mRxSharedPreferences.observeBoolean(TEST_KEY, false).subscribe(testSubscriber);
     mRxSharedPreferences.putBoolean(TEST_KEY, true);
-    assertThat(mRxSharedPreferences.getBoolean(TEST_KEY, false), equalTo(true));
+    mRxSharedPreferences.putBoolean(TEST_KEY, false);
+    mRxSharedPreferences.putBoolean(TEST_KEY_2, true);
     mRxSharedPreferences.reset();
-    assertThat(mRxSharedPreferences.getBoolean(TEST_KEY, false), equalTo(false));
+
+    assertThat(mRxSharedPreferences.getBoolean(TEST_KEY, true), equalTo(true));
+    assertThat(mRxSharedPreferences.getBoolean(TEST_KEY_2, false), equalTo(false));
+
+    subscription.unsubscribe();
+
+    mRxSharedPreferences.putBoolean(TEST_KEY, false);
+
+    testSubscriber.assertReceivedOnNext(Arrays.asList(false, true, false, false));
   }
 }
