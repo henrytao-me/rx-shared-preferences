@@ -371,10 +371,10 @@ public class RxSharePreferencesTest {
     assertThat(mRxSharedPreferences.getFloat("b", 0f), equalTo(1.5f));
     assertThat(mRxSharedPreferences.getInt("c", 0), equalTo(10));
 
-    //keeps.put("a", BooleanPreference.class);
-    //keeps.put("a", BooleanPreference.class);
-    //keeps.put("a", BooleanPreference.class);
-    //mRxSharedPreferences.reset(keeps);
+    mRxSharedPreferences.resetButKeep(Arrays.asList("a"));
+    assertThat(mRxSharedPreferences.getBoolean("a", false), equalTo(true));
+    assertThat(mRxSharedPreferences.getFloat("b", 0f), equalTo(0f));
+    assertThat(mRxSharedPreferences.getInt("c", 0), equalTo(0));
   }
 
   @Test
