@@ -1,4 +1,4 @@
-[ ![Download](https://api.bintray.com/packages/henrytao-me/maven/rx-shared-preferences/images/download.svg) ](https://bintray.com/henrytao-me/maven/rx-shared-preferences/_latestVersion) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-smooth--app--bar--layout-brightgreen.svg?style=flat)](http://android-arsenal.com/details/1/2565)
+[ ![Download](https://api.bintray.com/packages/henrytao-me/maven/rx-shared-preferences/images/download.svg) ](https://bintray.com/henrytao-me/maven/rx-shared-preferences/_latestVersion) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-rx--shared--preferences-brightgreen.svg?style=flat)](http://android-arsenal.com/details/1/2914)
 
 rx-shared-preferences
 ================
