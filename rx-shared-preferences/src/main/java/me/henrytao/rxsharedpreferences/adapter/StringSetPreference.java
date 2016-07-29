@@ -14,26 +14,28 @@
  * limitations under the License.
  */
 
-package me.henrytao.rxsharedpreferences;
+package me.henrytao.rxsharedpreferences.adapter;
 
 import android.content.SharedPreferences;
+
+import java.util.Set;
 
 /**
  * Created by henrytao on 11/22/15.
  */
-public class BooleanPreference extends BasePreference<Boolean> {
+public class StringSetPreference extends BasePreference<Set<String>> {
 
-  public BooleanPreference(SharedPreferences sharedPreferences) {
+  public StringSetPreference(SharedPreferences sharedPreferences) {
     super(sharedPreferences);
   }
 
   @Override
-  protected Boolean getValue(String key, Boolean defValue) {
-    return mSharedPreferences.getBoolean(key, defValue);
+  protected Set<String> getValue(String key, Set<String> defValue) {
+    return mSharedPreferences.getStringSet(key, defValue);
   }
 
   @Override
-  protected void putValue(String key, Boolean value) {
-    mSharedPreferences.edit().putBoolean(key, value).apply();
+  protected void putValue(String key, Set<String> value) {
+    mSharedPreferences.edit().putStringSet(key, value).apply();
   }
 }

@@ -382,7 +382,7 @@ public class RxSharePreferencesTest {
     TestSubscriber<Boolean> testSubscriber = new TestSubscriber<>();
     Subscription subscription = mRxSharedPreferences.observeBoolean(TEST_KEY, false).subscribe(testSubscriber);
     mRxSharedPreferences.putBoolean(TEST_KEY, true);
-    mRxSharedPreferences.putBoolean(TEST_KEY, false);
+    mRxSharedPreferences.putBoolean(TEST_KEY, true);
     mRxSharedPreferences.putBoolean(TEST_KEY_2, true);
     mRxSharedPreferences.reset();
 
@@ -393,6 +393,6 @@ public class RxSharePreferencesTest {
 
     mRxSharedPreferences.putBoolean(TEST_KEY, false);
 
-    testSubscriber.assertReceivedOnNext(Arrays.asList(false, true, false, false));
+    testSubscriber.assertReceivedOnNext(Arrays.asList(false, true));
   }
 }

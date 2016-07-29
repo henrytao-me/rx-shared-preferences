@@ -25,6 +25,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import me.henrytao.rxsharedpreferences.adapter.BasePreference;
+import me.henrytao.rxsharedpreferences.adapter.BooleanPreference;
+import me.henrytao.rxsharedpreferences.adapter.FloatPreference;
+import me.henrytao.rxsharedpreferences.adapter.IntegerPreference;
+import me.henrytao.rxsharedpreferences.adapter.JSONObjectPreference;
+import me.henrytao.rxsharedpreferences.adapter.LongPreference;
+import me.henrytao.rxsharedpreferences.adapter.MapPreference;
+import me.henrytao.rxsharedpreferences.adapter.StringPreference;
+import me.henrytao.rxsharedpreferences.adapter.StringSetPreference;
 import rx.Observable;
 
 /**

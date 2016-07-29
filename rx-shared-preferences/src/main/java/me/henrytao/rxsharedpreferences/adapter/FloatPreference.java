@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-package me.henrytao.rxsharedpreferences;
+package me.henrytao.rxsharedpreferences.adapter;
 
 import android.content.SharedPreferences;
 
 /**
  * Created by henrytao on 11/22/15.
  */
-public class IntegerPreference extends BasePreference<Integer> {
+public class FloatPreference extends BasePreference<Float> {
 
-  public IntegerPreference(SharedPreferences sharedPreferences) {
+  public FloatPreference(SharedPreferences sharedPreferences) {
     super(sharedPreferences);
   }
 
   @Override
-  protected Integer getValue(String key, Integer defValue) {
-    return mSharedPreferences.getInt(key, defValue);
+  protected Float getValue(String key, Float defValue) {
+    return mSharedPreferences.getFloat(key, defValue);
   }
 
   @Override
-  protected void putValue(String key, Integer value) {
-    mSharedPreferences.edit().putInt(key, value).apply();
+  protected void putValue(String key, Float value) {
+    mSharedPreferences.edit().putFloat(key, value).apply();
   }
 }

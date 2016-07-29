@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package me.henrytao.rxsharedpreferences;
+package me.henrytao.rxsharedpreferences.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
@@ -23,9 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
-import rx.Subscription;
 import rx.subjects.PublishSubject;
-import rx.subscriptions.Subscriptions;
 
 /**
  * Created by henrytao on 11/22/15.
@@ -49,7 +48,6 @@ public abstract class BasePreference<T> {
     mIndexes = new ArrayList<>();
     mSubject = PublishSubject.create();
     mSharedPreferences = sharedPreferences;
-    mSharedPreferences.registerOnSharedPreferenceChangeListener((preferences, key) -> mSubject.onNext(key));
   }
 
   public T get(String key, T defValue) {
@@ -59,25 +57,25 @@ public abstract class BasePreference<T> {
 
   public Observable<T> observe(String key, T defValue) {
     addToIndex(key);
-    return Observable.create(subscriber -> {
-      subscriber.onNext(get(key, defValue));
-      Subscription subjectSubscription = mSubject
-          .filter(k -> TextUtils.equals(k, key))
-          .map(k -> get(key, defValue))
-          .subscribe(subscriber::onNext);
-      subscriber.add(Subscriptions.create(subjectSubscription::unsubscribe));
-    });
+    return Observable.just(null)
+        .map(o -> get(key, defValue))
+        .mergeWith(mSubject
+            .filter(k -> TextUtils.equals(k, key))
+            .map(k -> get(k, defValue)))
+        .distinctUntilChanged();
   }
 
   public void put(String key, T value) {
     addToIndex(key);
     putValue(key, value);
+    mSubject.onNext(key);
   }
 
   public void reset() {
     resetButKeep(null);
   }
 
+  @SuppressLint("CommitPrefEdits")
   public void resetButKeep(List<String> keys) {
     keys = keys != null ? keys : new ArrayList<>();
     if (mIndexes.size() > 0) {

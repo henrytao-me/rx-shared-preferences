@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.henrytao.rxsharedpreferences;
+package me.henrytao.rxsharedpreferences.adapter;
 
 import android.content.SharedPreferences;
 
