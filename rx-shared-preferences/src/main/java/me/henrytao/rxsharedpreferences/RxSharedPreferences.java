@@ -32,9 +32,11 @@ import me.henrytao.rxsharedpreferences.adapter.IntegerPreference;
 import me.henrytao.rxsharedpreferences.adapter.JSONObjectPreference;
 import me.henrytao.rxsharedpreferences.adapter.LongPreference;
 import me.henrytao.rxsharedpreferences.adapter.MapPreference;
+import me.henrytao.rxsharedpreferences.adapter.ObjectPreference;
 import me.henrytao.rxsharedpreferences.adapter.StringPreference;
 import me.henrytao.rxsharedpreferences.adapter.StringSetPreference;
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * Created by henrytao on 11/22/15.
@@ -54,6 +56,8 @@ public class RxSharedPreferences {
   protected final LongPreference mLongPreference;
 
   protected final MapPreference mMapPreference;
+
+  protected final ObjectPreference mObjectPreference;
 
   protected final List<BasePreference> mRegisteredPreferences;
 
@@ -76,6 +80,7 @@ public class RxSharedPreferences {
     mMapPreference = new MapPreference(mSharedPreferences);
     mStringPreference = new StringPreference(mSharedPreferences);
     mStringSetPreference = new StringSetPreference(mSharedPreferences);
+    mObjectPreference = new ObjectPreference(mSharedPreferences);
 
     mRegisteredPreferences = new ArrayList<>();
     register(mBooleanPreference);
@@ -86,6 +91,7 @@ public class RxSharedPreferences {
     register(mMapPreference);
     register(mStringPreference);
     register(mStringSetPreference);
+    register(mObjectPreference);
   }
 
   public Boolean getBoolean(String key, Boolean defValue) {
@@ -110,6 +116,10 @@ public class RxSharedPreferences {
 
   public Map<String, ?> getMap(String key, Map<String, ?> defValue) {
     return mMapPreference.get(key, defValue);
+  }
+
+  public <T> T getObject(String key, T defValue, Func1<String, T> func1) {
+    return mObjectPreference.get(key, defValue, func1);
   }
 
   public String getString(String key, String defValue) {
@@ -144,6 +154,10 @@ public class RxSharedPreferences {
     return mMapPreference.observe(key, defValue);
   }
 
+  public <T> Observable<T> observeObject(String key, T defValue, Func1<String, T> func1) {
+    return mObjectPreference.observe(key, defValue, func1);
+  }
+
   public Observable<String> observeString(String key, String defValue) {
     return mStringPreference.observe(key, defValue);
   }
@@ -174,6 +188,10 @@ public class RxSharedPreferences {
 
   public void putMap(String key, Map<String, ?> value) {
     mMapPreference.put(key, value);
+  }
+
+  public <T> void putObject(String key, T value, Func1<T, String> func1) {
+    mObjectPreference.put(key, value, func1);
   }
 
   public void putString(String key, String value) {
