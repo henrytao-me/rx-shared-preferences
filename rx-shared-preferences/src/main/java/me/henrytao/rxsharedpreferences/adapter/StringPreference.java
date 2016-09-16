@@ -16,6 +16,7 @@
 
 package me.henrytao.rxsharedpreferences.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 
 /**
@@ -32,8 +33,9 @@ public class StringPreference extends BasePreference<String> {
     return mSharedPreferences.getString(key, defValue);
   }
 
+  @SuppressLint("CommitPrefEdits")
   @Override
   protected void putValue(String key, String value) {
-    mSharedPreferences.edit().putString(key, value).apply();
+    mSharedPreferences.edit().putString(key, value).commit();
   }
 }

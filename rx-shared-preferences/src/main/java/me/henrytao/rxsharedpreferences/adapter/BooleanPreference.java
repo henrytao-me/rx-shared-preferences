@@ -16,6 +16,7 @@
 
 package me.henrytao.rxsharedpreferences.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 
 /**
@@ -32,8 +33,9 @@ public class BooleanPreference extends BasePreference<Boolean> {
     return mSharedPreferences.getBoolean(key, defValue);
   }
 
+  @SuppressLint("CommitPrefEdits")
   @Override
   protected void putValue(String key, Boolean value) {
-    mSharedPreferences.edit().putBoolean(key, value).apply();
+    mSharedPreferences.edit().putBoolean(key, value).commit();
   }
 }

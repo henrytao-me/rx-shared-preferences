@@ -23,7 +23,7 @@ import android.content.SharedPreferences;
 import java.util.Locale;
 
 import me.henrytao.rxsharedpreferences.RxSharedPreferences;
-import me.henrytao.rxsharedpreferences.util.log.Ln;
+import me.henrytao.rxsharedpreferences.util.Ln;
 
 /**
  * Created by henrytao on 11/22/15.

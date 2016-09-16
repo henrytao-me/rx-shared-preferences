@@ -22,7 +22,11 @@ import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
+import me.henrytao.rxsharedpreferences.util.SubscriptionUtils;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
@@ -37,26 +41,25 @@ public abstract class BasePreference<T> {
 
   protected final SharedPreferences mSharedPreferences;
 
-  protected List<String> mIndexes;
+  protected final PublishSubject<String> mSubject;
 
-  protected PublishSubject<String> mSubject;
+  private final ConcurrentMap<String, T> mCaches;
 
   public BasePreference(SharedPreferences sharedPreferences) {
     if (sharedPreferences == null) {
       throw new RuntimeException("SharedPreferences can not be null");
     }
-    mIndexes = new ArrayList<>();
-    mSubject = PublishSubject.create();
     mSharedPreferences = sharedPreferences;
+    mSubject = PublishSubject.create();
+    mCaches = new ConcurrentHashMap<>();
   }
 
   public T get(String key, T defValue) {
-    addToIndex(key);
-    return getValue(key, defValue);
+    T value = mCaches.containsKey(key) ? mCaches.get(key) : null;
+    return value != null ? value : getValue(key, defValue);
   }
 
   public Observable<T> observe(String key, T defValue) {
-    addToIndex(key);
     return Observable.just(null)
         .map(o -> get(key, defValue))
         .mergeWith(mSubject
@@ -65,37 +68,28 @@ public abstract class BasePreference<T> {
         .distinctUntilChanged();
   }
 
-  public void put(String key, T value) {
-    addToIndex(key);
-    putValue(key, value);
-    mSubject.onNext(key);
+  public Observable<T> put(String key, T value) {
+    return Observable.create(subscriber -> {
+      putValue(key, value);
+      SubscriptionUtils.onNextAndComplete(subscriber, value);
+      mSubject.onNext(key);
+    });
   }
 
-  public void reset() {
-    resetButKeep(null);
+  public Observable<Void> reset() {
+    return resetButKeep(null);
   }
 
   @SuppressLint("CommitPrefEdits")
-  public void resetButKeep(List<String> keys) {
-    keys = keys != null ? keys : new ArrayList<>();
-    if (mIndexes.size() > 0) {
-      List<String> keepIndexes = new ArrayList<>();
-      int i = 0;
-      for (int n = mIndexes.size(); i < n; i++) {
-        if (keys.indexOf(mIndexes.get(i)) < 0) {
-          mSharedPreferences.edit().remove(mIndexes.get(i)).commit();
-        } else {
-          keepIndexes.add(mIndexes.get(i));
+  public Observable<Void> resetButKeep(List<String> keys) {
+    return Observable.create(subscriber -> {
+      List<String> keeps = keys != null ? keys : new ArrayList<>();
+      for (Map.Entry<String, T> entry : mCaches.entrySet()) {
+        if (keeps.indexOf(entry.getKey()) < 0) {
+          mSharedPreferences.edit().remove(entry.getKey()).commit();
+          mCaches.put(entry.getKey(), null);
         }
       }
-      mIndexes.clear();
-      mIndexes.addAll(keepIndexes);
-    }
-  }
-
-  protected void addToIndex(String key) {
-    if (mIndexes.indexOf(key) < 0) {
-      mIndexes.add(key);
-    }
+    });
   }
 }

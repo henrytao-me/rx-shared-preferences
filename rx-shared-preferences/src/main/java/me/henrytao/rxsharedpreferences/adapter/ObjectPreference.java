@@ -30,12 +30,6 @@ public class ObjectPreference extends StringPreference {
     super(sharedPreferences);
   }
 
-  public <T> T get(Class<T> tClass, String key, T defValue) {
-    String value = get(key, null);
-
-    return null;
-  }
-
   public <T> T get(String key, T defValue, Func1<String, T> func1) {
     String value = get(key, null);
     if (value == null) {

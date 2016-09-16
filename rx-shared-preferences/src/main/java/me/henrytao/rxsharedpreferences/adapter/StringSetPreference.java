@@ -16,6 +16,7 @@
 
 package me.henrytao.rxsharedpreferences.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 
 import java.util.Set;
@@ -34,8 +35,9 @@ public class StringSetPreference extends BasePreference<Set<String>> {
     return mSharedPreferences.getStringSet(key, defValue);
   }
 
+  @SuppressLint("CommitPrefEdits")
   @Override
   protected void putValue(String key, Set<String> value) {
-    mSharedPreferences.edit().putStringSet(key, value).apply();
+    mSharedPreferences.edit().putStringSet(key, value).commit();
   }
 }
