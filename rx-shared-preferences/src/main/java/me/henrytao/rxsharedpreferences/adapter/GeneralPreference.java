@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 "Henry Tao <hi@henrytao.me>"
+ * Copyright 2016 "Henry Tao <hi@henrytao.me>"
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,9 @@ package me.henrytao.rxsharedpreferences.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
-import android.text.TextUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,30 +28,30 @@ import java.util.concurrent.ConcurrentMap;
 
 import me.henrytao.rxsharedpreferences.util.SubscriptionUtils;
 import rx.Observable;
+import rx.functions.Func1;
 import rx.subjects.PublishSubject;
 
 /**
- * Created by henrytao on 11/22/15.
+ * Created by henrytao on 9/17/16.
  */
-public abstract class BasePreference<T> implements Adapter {
+public class GeneralPreference<D, S> implements Adapter {
 
-  protected abstract T getValue(String key, T defValue);
+  protected final Map<Class<?>, Func1<String, ?>> mConverters;
 
-  protected abstract void putValue(String key, T value);
+  private final ConcurrentMap<String, D> mCaches;
 
-  protected final SharedPreferences mSharedPreferences;
+  private final SharedPreferences mSharedPreferences;
 
-  protected final PublishSubject<String> mSubject;
+  private final PublishSubject<String> mSubject;
 
-  private final ConcurrentMap<String, T> mCaches;
-
-  public BasePreference(SharedPreferences sharedPreferences) {
+  public GeneralPreference(SharedPreferences sharedPreferences) {
     if (sharedPreferences == null) {
       throw new RuntimeException("SharedPreferences can not be null");
     }
     mSharedPreferences = sharedPreferences;
     mSubject = PublishSubject.create();
     mCaches = new ConcurrentHashMap<>();
+    mConverters = new HashMap<>();
   }
 
   @Override
@@ -64,7 +64,7 @@ public abstract class BasePreference<T> implements Adapter {
   public Observable<Void> resetButKeep(List<String> keys) {
     return Observable.create(subscriber -> {
       List<String> keeps = keys != null ? keys : new ArrayList<>();
-      for (Map.Entry<String, T> entry : mCaches.entrySet()) {
+      for (Map.Entry<String, D> entry : mCaches.entrySet()) {
         if (keeps.indexOf(entry.getKey()) < 0) {
           mSharedPreferences.edit().remove(entry.getKey()).commit();
           mCaches.put(entry.getKey(), null);
@@ -73,26 +73,28 @@ public abstract class BasePreference<T> implements Adapter {
     });
   }
 
-  public Observable<T> get(String key, T defValue) {
-    return Observable.create(subscriber -> {
-      T value = mCaches.containsKey(key) ? mCaches.get(key) : null;
-      SubscriptionUtils.onNextAndComplete(subscriber, value != null ? value : getValue(key, defValue));
-    });
+  public D get(String key, D defValue) {
+    D value = mCaches.containsKey(key) ? mCaches.get(key) : null;
+    return value != null ? value : getValue(key, defValue);
   }
 
-  public Observable<T> observe(String key, T defValue) {
-    return get(key, defValue)
-        .mergeWith(mSubject
-            .filter(k -> TextUtils.equals(k, key))
-            .flatMap(k -> get(key, defValue)))
-        .distinctUntilChanged();
-  }
-
-  public Observable<Void> put(String key, T value) {
+  public Observable<Void> put(String key, D value) {
     return Observable.create(subscriber -> {
       putValue(key, value);
       SubscriptionUtils.onNextAndComplete(subscriber);
       mSubject.onNext(key);
     });
+  }
+
+  //public void register(Class<?> tClass, Func1<String, ?> converter) {
+  //  mConverters.put(tClass, converter);
+  //}
+
+  protected D getValue(String key, D defValue) {
+    return null;
+  }
+
+  protected void putValue(String key, D value) {
+
   }
 }

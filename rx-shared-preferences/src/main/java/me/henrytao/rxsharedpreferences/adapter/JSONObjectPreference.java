@@ -18,6 +18,7 @@ package me.henrytao.rxsharedpreferences.adapter;
 
 import org.json.JSONObject;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 
 import java.util.Locale;
@@ -39,22 +40,23 @@ public class JSONObjectPreference extends BasePreference<JSONObject> {
     String jsonString = mSharedPreferences.getString(key, null);
     try {
       return new JSONObject(jsonString);
-    } catch (Exception e) {
+    } catch (Exception ignore) {
       if (RxSharedPreferences.DEBUG) {
-        Ln.d(String.format(Locale.US, "%s/%s", JSONObjectPreference.class.getName(), "getValue"), e);
+        Ln.d(String.format(Locale.US, "%s/%s", JSONObjectPreference.class.getSimpleName(), "getValue"), ignore);
       }
       return defValue;
     }
   }
 
+  @SuppressLint("CommitPrefEdits")
   @Override
   protected void putValue(String key, JSONObject value) {
     try {
       String jsonString = value.toString();
-      mSharedPreferences.edit().putString(key, jsonString).apply();
+      mSharedPreferences.edit().putString(key, jsonString).commit();
     } catch (Exception ignore) {
       if (RxSharedPreferences.DEBUG) {
-        Ln.d(String.format(Locale.US, "%s/%s", JSONObjectPreference.class.getName(), "putValue"), ignore);
+        Ln.d(String.format(Locale.US, "%s/%s", JSONObjectPreference.class.getSimpleName(), "putValue"), ignore);
       }
     }
   }

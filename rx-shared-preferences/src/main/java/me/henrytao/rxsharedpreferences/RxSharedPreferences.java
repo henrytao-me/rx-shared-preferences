@@ -22,16 +22,14 @@ import android.content.SharedPreferences;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import me.henrytao.rxsharedpreferences.adapter.BasePreference;
+import me.henrytao.rxsharedpreferences.adapter.Adapter;
 import me.henrytao.rxsharedpreferences.adapter.BooleanPreference;
 import me.henrytao.rxsharedpreferences.adapter.FloatPreference;
 import me.henrytao.rxsharedpreferences.adapter.IntegerPreference;
 import me.henrytao.rxsharedpreferences.adapter.JSONObjectPreference;
 import me.henrytao.rxsharedpreferences.adapter.LongPreference;
-import me.henrytao.rxsharedpreferences.adapter.MapPreference;
 import me.henrytao.rxsharedpreferences.adapter.ObjectPreference;
 import me.henrytao.rxsharedpreferences.adapter.StringPreference;
 import me.henrytao.rxsharedpreferences.adapter.StringSetPreference;
@@ -55,11 +53,9 @@ public class RxSharedPreferences {
 
   protected final LongPreference mLongPreference;
 
-  protected final MapPreference mMapPreference;
-
   protected final ObjectPreference mObjectPreference;
 
-  protected final List<BasePreference> mRegisteredPreferences;
+  protected final List<Adapter> mRegisteredPreferences;
 
   protected final SharedPreferences mSharedPreferences;
 
@@ -77,7 +73,6 @@ public class RxSharedPreferences {
     mIntegerPreference = new IntegerPreference(mSharedPreferences);
     mJSONPreference = new JSONObjectPreference(mSharedPreferences);
     mLongPreference = new LongPreference(mSharedPreferences);
-    mMapPreference = new MapPreference(mSharedPreferences);
     mStringPreference = new StringPreference(mSharedPreferences);
     mStringSetPreference = new StringSetPreference(mSharedPreferences);
     mObjectPreference = new ObjectPreference(mSharedPreferences);
@@ -88,45 +83,40 @@ public class RxSharedPreferences {
     register(mIntegerPreference);
     register(mJSONPreference);
     register(mLongPreference);
-    register(mMapPreference);
     register(mStringPreference);
     register(mStringSetPreference);
     register(mObjectPreference);
   }
 
-  public Boolean getBoolean(String key, Boolean defValue) {
+  public Observable<Boolean> getBoolean(String key, Boolean defValue) {
     return mBooleanPreference.get(key, defValue);
   }
 
-  public Float getFloat(String key, Float defValue) {
+  public Observable<Float> getFloat(String key, Float defValue) {
     return mFloatPreference.get(key, defValue);
   }
 
-  public Integer getInt(String key, Integer defValue) {
+  public Observable<Integer> getInt(String key, Integer defValue) {
     return mIntegerPreference.get(key, defValue);
   }
 
-  public JSONObject getJSONObject(String key, JSONObject defValue) {
+  public Observable<JSONObject> getJSONObject(String key, JSONObject defValue) {
     return mJSONPreference.get(key, defValue);
   }
 
-  public Long getLong(String key, Long defValue) {
+  public Observable<Long> getLong(String key, Long defValue) {
     return mLongPreference.get(key, defValue);
   }
 
-  public Map<String, ?> getMap(String key, Map<String, ?> defValue) {
-    return mMapPreference.get(key, defValue);
+  public <T> Observable<T> getObject(Class<T> tClass, String key, T defValue) {
+    return mObjectPreference.get(tClass, key, defValue);
   }
 
-  public <T> T getObject(String key, T defValue, Func1<String, T> func1) {
-    return mObjectPreference.get(key, defValue, func1);
-  }
-
-  public String getString(String key, String defValue) {
+  public Observable<String> getString(String key, String defValue) {
     return mStringPreference.get(key, defValue);
   }
 
-  public Set<String> getStringSet(String key, Set<String> defValue) {
+  public Observable<Set<String>> getStringSet(String key, Set<String> defValue) {
     return mStringSetPreference.get(key, defValue);
   }
 
@@ -150,12 +140,8 @@ public class RxSharedPreferences {
     return mLongPreference.observe(key, defValue);
   }
 
-  public Observable<Map<String, ?>> observeMap(String key, Map<String, ?> defValue) {
-    return mMapPreference.observe(key, defValue);
-  }
-
-  public <T> Observable<T> observeObject(String key, T defValue, Func1<String, T> func1) {
-    return mObjectPreference.observe(key, defValue, func1);
+  public <T> Observable<T> observeObject(Class<T> tClass, String key, T defValue) {
+    return mObjectPreference.observe(tClass, key, defValue);
   }
 
   public Observable<String> observeString(String key, String defValue) {
@@ -166,40 +152,40 @@ public class RxSharedPreferences {
     return mStringSetPreference.observe(key, defValue);
   }
 
-  public void putBoolean(String key, Boolean value) {
-    mBooleanPreference.put(key, value);
+  public Observable<Void> putBoolean(String key, Boolean value) {
+    return mBooleanPreference.put(key, value);
   }
 
-  public void putFloat(String key, Float value) {
-    mFloatPreference.put(key, value);
+  public Observable<Void> putFloat(String key, Float value) {
+    return mFloatPreference.put(key, value);
   }
 
-  public void putInt(String key, Integer value) {
-    mIntegerPreference.put(key, value);
+  public Observable<Void> putInt(String key, Integer value) {
+    return mIntegerPreference.put(key, value);
   }
 
-  public void putJSONObject(String key, JSONObject value) {
-    mJSONPreference.put(key, value);
+  public Observable<Void> putJSONObject(String key, JSONObject value) {
+    return mJSONPreference.put(key, value);
   }
 
-  public void putLong(String key, Long value) {
-    mLongPreference.put(key, value);
+  public Observable<Void> putLong(String key, Long value) {
+    return mLongPreference.put(key, value);
   }
 
-  public void putMap(String key, Map<String, ?> value) {
-    mMapPreference.put(key, value);
+  public <T> Observable<Void> putObject(Class<T> tClass, String key, T value) {
+    return mObjectPreference.put(tClass, key, value);
   }
 
-  public <T> void putObject(String key, T value, Func1<T, String> func1) {
-    mObjectPreference.put(key, value, func1);
+  public Observable<Void> putString(String key, String value) {
+    return mStringPreference.put(key, value);
   }
 
-  public void putString(String key, String value) {
-    mStringPreference.put(key, value);
+  public Observable<Void> putStringSet(String key, Set<String> value) {
+    return mStringSetPreference.put(key, value);
   }
 
-  public void putStringSet(String key, Set<String> value) {
-    mStringSetPreference.put(key, value);
+  public <T> void register(Class<T> tClass, Func1<T, String> serialize, Func1<String, T> deserialize) {
+    mObjectPreference.register(tClass, serialize, deserialize);
   }
 
   public void reset() {
@@ -216,7 +202,7 @@ public class RxSharedPreferences {
     }
   }
 
-  protected void register(BasePreference basePreference) {
-    mRegisteredPreferences.add(basePreference);
+  protected void register(Adapter adapter) {
+    mRegisteredPreferences.add(adapter);
   }
 }
