@@ -132,6 +132,7 @@ public class ObjectPreference implements Adapter {
       try {
         mSharedPreferences.edit().putString(key, (String) mSerializers.get(tClass).call(value)).commit();
       } catch (Exception ignore) {
+        mSharedPreferences.edit().putString(key, null).commit();
       }
     }
   }
