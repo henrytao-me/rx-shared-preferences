@@ -19,6 +19,7 @@ package me.henrytao.rxsharedpreferences;
 import org.json.JSONObject;
 
 import android.content.SharedPreferences;
+import android.os.Bundle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,7 @@ import java.util.Set;
 
 import me.henrytao.rxsharedpreferences.adapter.Adapter;
 import me.henrytao.rxsharedpreferences.adapter.BooleanPreference;
+import me.henrytao.rxsharedpreferences.adapter.BundlePreference;
 import me.henrytao.rxsharedpreferences.adapter.FloatPreference;
 import me.henrytao.rxsharedpreferences.adapter.IntegerPreference;
 import me.henrytao.rxsharedpreferences.adapter.JSONObjectPreference;
@@ -44,6 +46,8 @@ public class RxSharedPreferences {
   public static boolean DEBUG = true;
 
   protected final BooleanPreference mBooleanPreference;
+
+  protected final BundlePreference mBundlePreference;
 
   protected final FloatPreference mFloatPreference;
 
@@ -76,6 +80,7 @@ public class RxSharedPreferences {
     mStringPreference = new StringPreference(mSharedPreferences);
     mStringSetPreference = new StringSetPreference(mSharedPreferences);
     mObjectPreference = new ObjectPreference(mSharedPreferences);
+    mBundlePreference = new BundlePreference(mSharedPreferences);
 
     mRegisteredPreferences = new ArrayList<>();
     register(mBooleanPreference);
@@ -86,10 +91,15 @@ public class RxSharedPreferences {
     register(mStringPreference);
     register(mStringSetPreference);
     register(mObjectPreference);
+    register(mBundlePreference);
   }
 
   public Observable<Boolean> getBoolean(String key, Boolean defValue) {
     return mBooleanPreference.get(key, defValue);
+  }
+
+  public Observable<Bundle> getBundle(String key, Bundle defValue) {
+    return mBundlePreference.get(key, defValue);
   }
 
   public Observable<Float> getFloat(String key, Float defValue) {
@@ -124,6 +134,10 @@ public class RxSharedPreferences {
     return mBooleanPreference.observe(key, defValue);
   }
 
+  public Observable<Bundle> observeBundle(String key, Bundle defValue) {
+    return mBundlePreference.observe(key, defValue);
+  }
+
   public Observable<Float> observeFloat(String key, Float defValue) {
     return mFloatPreference.observe(key, defValue);
   }
@@ -154,6 +168,10 @@ public class RxSharedPreferences {
 
   public Observable<Void> putBoolean(String key, Boolean value) {
     return mBooleanPreference.put(key, value);
+  }
+
+  public Observable<Void> putBundle(String key, Bundle value) {
+    return mBundlePreference.put(key, value);
   }
 
   public Observable<Void> putFloat(String key, Float value) {
