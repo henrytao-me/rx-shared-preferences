@@ -14,26 +14,30 @@
  * limitations under the License.
  */
 
-package me.henrytao.rxsharedpreferences;
+package me.henrytao.rxsharedpreferences.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
+
+import java.util.Set;
 
 /**
  * Created by henrytao on 11/22/15.
  */
-public class StringPreference extends BasePreference<String> {
+public class StringSetPreference extends BasePreference<Set<String>> {
 
-  public StringPreference(SharedPreferences sharedPreferences) {
+  public StringSetPreference(SharedPreferences sharedPreferences) {
     super(sharedPreferences);
   }
 
   @Override
-  protected String getValue(String key, String defValue) {
-    return mSharedPreferences.getString(key, defValue);
+  protected Set<String> getValue(String key, Set<String> defValue) {
+    return mSharedPreferences.getStringSet(key, defValue);
   }
 
+  @SuppressLint("CommitPrefEdits")
   @Override
-  protected void putValue(String key, String value) {
-    mSharedPreferences.edit().putString(key, value).apply();
+  protected void putValue(String key, Set<String> value) {
+    mSharedPreferences.edit().putStringSet(key, value).commit();
   }
 }

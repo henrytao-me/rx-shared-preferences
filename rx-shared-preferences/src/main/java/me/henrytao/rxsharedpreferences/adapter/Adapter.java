@@ -14,4 +14,18 @@
  * limitations under the License.
  */
 
-include ':rx-shared-preferences'
+package me.henrytao.rxsharedpreferences.adapter;
+
+import java.util.List;
+
+import rx.Observable;
+
+/**
+ * Created by henrytao on 9/16/16.
+ */
+public interface Adapter {
+
+  Observable<Void> reset();
+
+  Observable<Void> resetButKeep(List<String> keys);
+}

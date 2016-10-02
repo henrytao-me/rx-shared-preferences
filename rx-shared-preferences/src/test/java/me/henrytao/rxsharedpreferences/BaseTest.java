@@ -14,4 +14,21 @@
  * limitations under the License.
  */
 
-include ':rx-shared-preferences'
+package me.henrytao.rxsharedpreferences;
+
+import org.junit.After;
+import org.junit.Before;
+
+/**
+ * Created by henrytao on 10/2/16.
+ */
+public class BaseTest {
+
+  @After
+  public void onAfter() {
+  }
+
+  @Before
+  public void onBefore() {
+  }
+}

@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package me.henrytao.rxsharedpreferences;
+package me.henrytao.rxsharedpreferences.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 
 /**
@@ -32,8 +33,9 @@ public class LongPreference extends BasePreference<Long> {
     return mSharedPreferences.getLong(key, defValue);
   }
 
+  @SuppressLint("CommitPrefEdits")
   @Override
   protected void putValue(String key, Long value) {
-    mSharedPreferences.edit().putLong(key, value).apply();
+    mSharedPreferences.edit().putLong(key, value).commit();
   }
 }

@@ -14,26 +14,28 @@
  * limitations under the License.
  */
 
-package me.henrytao.rxsharedpreferences;
+package me.henrytao.rxsharedpreferences.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 
 /**
  * Created by henrytao on 11/22/15.
  */
-public class BooleanPreference extends BasePreference<Boolean> {
+public class StringPreference extends BasePreference<String> {
 
-  public BooleanPreference(SharedPreferences sharedPreferences) {
+  public StringPreference(SharedPreferences sharedPreferences) {
     super(sharedPreferences);
   }
 
   @Override
-  protected Boolean getValue(String key, Boolean defValue) {
-    return mSharedPreferences.getBoolean(key, defValue);
+  protected String getValue(String key, String defValue) {
+    return mSharedPreferences.getString(key, defValue);
   }
 
+  @SuppressLint("CommitPrefEdits")
   @Override
-  protected void putValue(String key, Boolean value) {
-    mSharedPreferences.edit().putBoolean(key, value).apply();
+  protected void putValue(String key, String value) {
+    mSharedPreferences.edit().putString(key, value).commit();
   }
 }

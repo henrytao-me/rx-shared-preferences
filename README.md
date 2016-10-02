@@ -24,6 +24,8 @@ compile "me.henrytao:rx-shared-preferences:<latest-version>"
 - Map
 - String
 - StringSet
+- Object
+- Bundle
 - ResetButKeep
 
 

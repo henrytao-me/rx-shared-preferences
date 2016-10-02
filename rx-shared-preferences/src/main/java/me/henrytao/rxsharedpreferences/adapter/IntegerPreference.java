@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package me.henrytao.rxsharedpreferences;
+package me.henrytao.rxsharedpreferences.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 
 /**
@@ -32,8 +33,9 @@ public class IntegerPreference extends BasePreference<Integer> {
     return mSharedPreferences.getInt(key, defValue);
   }
 
+  @SuppressLint("CommitPrefEdits")
   @Override
   protected void putValue(String key, Integer value) {
-    mSharedPreferences.edit().putInt(key, value).apply();
+    mSharedPreferences.edit().putInt(key, value).commit();
   }
 }

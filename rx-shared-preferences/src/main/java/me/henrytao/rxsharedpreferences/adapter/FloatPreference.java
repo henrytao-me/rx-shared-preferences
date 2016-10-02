@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package me.henrytao.rxsharedpreferences;
+package me.henrytao.rxsharedpreferences.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 
 /**
@@ -32,8 +33,9 @@ public class FloatPreference extends BasePreference<Float> {
     return mSharedPreferences.getFloat(key, defValue);
   }
 
+  @SuppressLint("CommitPrefEdits")
   @Override
   protected void putValue(String key, Float value) {
-    mSharedPreferences.edit().putFloat(key, value).apply();
+    mSharedPreferences.edit().putFloat(key, value).commit();
   }
 }
