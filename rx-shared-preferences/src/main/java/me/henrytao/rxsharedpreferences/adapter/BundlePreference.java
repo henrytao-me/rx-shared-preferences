@@ -57,10 +57,13 @@ public class BundlePreference extends BasePreference<Bundle> {
   @SuppressLint("CommitPrefEdits")
   @Override
   protected void putValue(String key, Bundle bundle) {
-    Parcel parcel = Parcel.obtain();
-    bundle.writeToParcel(parcel, 0);
-    byte[] data = parcel.marshall();
-    String serialized = Base64.encodeToString(data, 0);
+    String serialized = null;
+    if (bundle != null) {
+      Parcel parcel = Parcel.obtain();
+      bundle.writeToParcel(parcel, 0);
+      byte[] data = parcel.marshall();
+      serialized = Base64.encodeToString(data, 0);
+    }
     mSharedPreferences.edit().putString(key, serialized).commit();
   }
 }
