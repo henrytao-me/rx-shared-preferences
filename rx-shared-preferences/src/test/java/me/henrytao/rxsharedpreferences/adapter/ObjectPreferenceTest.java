@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -47,14 +48,25 @@ public class ObjectPreferenceTest {
 
   private SharedPreferences mSharedPreferences;
 
+  @SuppressLint("CommitPrefEdits")
   @Before
   public void before() {
     Context context = RuntimeEnvironment.application;
     Gson gson = new Gson();
     mSharedPreferences = context.getSharedPreferences(PREFERENCES_KEY, Context.MODE_PRIVATE);
     mPreferences = new ObjectPreference(mSharedPreferences);
-    mPreferences.register(Bird.class, gson::toJson, s -> gson.fromJson(s, Bird.class));
-    mPreferences.register(Animal.class, gson::toJson, s -> gson.fromJson(s, Animal.class));
+    mPreferences.register(Bird.class, (key, data) -> {
+      mSharedPreferences.edit().putString(key, gson.toJson(data)).commit();
+    }, (key, defaultValue) -> {
+      String value = mSharedPreferences.getString(key, null);
+      return value == null ? defaultValue : gson.fromJson(value, Bird.class);
+    });
+    mPreferences.register(Animal.class, (key, data) -> {
+      mSharedPreferences.edit().putString(key, gson.toJson(data)).commit();
+    }, (key, defaultValue) -> {
+      String value = mSharedPreferences.getString(key, null);
+      return value == null ? defaultValue : gson.fromJson(value, Animal.class);
+    });
   }
 
   @Test

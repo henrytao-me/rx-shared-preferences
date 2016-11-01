@@ -35,8 +35,9 @@ import me.henrytao.rxsharedpreferences.adapter.LongPreference;
 import me.henrytao.rxsharedpreferences.adapter.ObjectPreference;
 import me.henrytao.rxsharedpreferences.adapter.StringPreference;
 import me.henrytao.rxsharedpreferences.adapter.StringSetPreference;
+import me.henrytao.rxsharedpreferences.type.ObjectDeserializer;
+import me.henrytao.rxsharedpreferences.type.ObjectSerializer;
 import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * Created by henrytao on 11/22/15.
@@ -202,7 +203,7 @@ public class RxSharedPreferences {
     return mStringSetPreference.put(key, value);
   }
 
-  public <T> void register(Class<T> tClass, Func1<T, String> serialize, Func1<String, T> deserialize) {
+  public <T> void register(Class<T> tClass, ObjectSerializer<T> serialize, ObjectDeserializer<T> deserialize) {
     mObjectPreference.register(tClass, serialize, deserialize);
   }
 
