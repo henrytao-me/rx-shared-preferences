@@ -21,5 +21,5 @@ package me.henrytao.rxsharedpreferences.type;
  */
 public interface ObjectDeserializer<T> {
 
-  T deserializer(String key, T defaultValue);
+  T deserialize(String key, T defaultValue);
 }

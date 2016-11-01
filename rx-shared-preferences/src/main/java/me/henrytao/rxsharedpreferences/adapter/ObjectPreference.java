@@ -117,7 +117,7 @@ public class ObjectPreference implements Adapter {
   protected <T> T getValue(Class<T> tClass, String key, T defValue) {
     T value = null;
     if (mDeserializers.containsKey(tClass)) {
-      value = tClass.cast(mDeserializers.get(tClass).deserializer(key, defValue));
+      value = tClass.cast(mDeserializers.get(tClass).deserialize(key, defValue));
     }
     return value != null ? value : defValue;
   }
