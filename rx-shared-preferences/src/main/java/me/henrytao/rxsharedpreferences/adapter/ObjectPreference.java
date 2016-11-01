@@ -27,9 +27,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import me.henrytao.rxsharedpreferences.type.ObjectDeserializer;
+import me.henrytao.rxsharedpreferences.type.ObjectSerializer;
 import me.henrytao.rxsharedpreferences.util.SubscriptionUtils;
 import rx.Observable;
-import rx.functions.Func1;
 import rx.subjects.PublishSubject;
 
 /**
@@ -37,9 +38,9 @@ import rx.subjects.PublishSubject;
  */
 public class ObjectPreference implements Adapter {
 
-  protected final Map<Class, Func1> mDeserializers = new HashMap<>();
+  protected final Map<Class, ObjectDeserializer> mDeserializers = new HashMap<>();
 
-  protected final Map<Class, Func1> mSerializers = new HashMap<>();
+  protected final Map<Class, ObjectSerializer> mSerializers = new HashMap<>();
 
   private final ConcurrentMap<String, Object> mCaches;
 
@@ -103,7 +104,7 @@ public class ObjectPreference implements Adapter {
     });
   }
 
-  public <T> void register(Class<T> tClass, Func1<T, String> serialize, Func1<String, T> deserialize) {
+  public <T> void register(Class<T> tClass, ObjectSerializer<T> serialize, ObjectDeserializer<T> deserialize) {
     if (serialize != null) {
       mSerializers.put(tClass, serialize);
     }
@@ -114,13 +115,9 @@ public class ObjectPreference implements Adapter {
 
   @SuppressWarnings("unchecked")
   protected <T> T getValue(Class<T> tClass, String key, T defValue) {
-    String rawValue = mSharedPreferences.getString(key, null);
     T value = null;
     if (mDeserializers.containsKey(tClass)) {
-      try {
-        value = tClass.cast(mDeserializers.get(tClass).call(rawValue));
-      } catch (Exception ignore) {
-      }
+      value = tClass.cast(mDeserializers.get(tClass).deserializer(key, defValue));
     }
     return value != null ? value : defValue;
   }
@@ -129,11 +126,7 @@ public class ObjectPreference implements Adapter {
   @SuppressWarnings("unchecked")
   protected <T> void putValue(Class<T> tClass, String key, T value) {
     if (mSerializers.containsKey(tClass)) {
-      try {
-        mSharedPreferences.edit().putString(key, (String) mSerializers.get(tClass).call(value)).commit();
-      } catch (Exception ignore) {
-        mSharedPreferences.edit().putString(key, null).commit();
-      }
+      mSerializers.get(tClass).serialize(key, value);
     }
   }
 }
